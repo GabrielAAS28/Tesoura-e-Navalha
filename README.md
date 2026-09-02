@@ -60,3 +60,5 @@ npx eas update:configure
 Fora de escopo neste MVP: cobrança de assinatura via Stripe/Pagar.me (piloto cobra manual/PIX), pagamento do cliente dentro do checkout, painel web de admin.
 
 Ver `mobile/app/` para as rotas (`(auth)`, `(client)`, `(barber)`) e `mobile/lib/` para os helpers de dados/auth.
+
+<!-- ci: validate PR checks -->
