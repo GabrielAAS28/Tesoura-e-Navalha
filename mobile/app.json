@@ -4,6 +4,9 @@
     "slug": "navalha",
     "scheme": "navalha",
     "version": "1.0.0",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
