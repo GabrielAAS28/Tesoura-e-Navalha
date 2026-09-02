@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { View, Text, TextInput, Pressable, Alert } from "react-native";
+import { View, Text, Alert } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { supabase } from "../../lib/supabase";
 import { useAuthStore } from "../../store/auth-store";
+import { Button } from "../../components/ui/Button";
+import { TextField } from "../../components/ui/TextField";
 
 function slugify(value: string) {
   return value
@@ -66,24 +68,20 @@ export default function CadastroBarbeiroEtapa2Screen() {
   }
 
   return (
-    <View className="flex-1 justify-center bg-white px-6">
-      <Text className="mb-1 text-2xl font-bold text-neutral-900">Sobre a barbearia</Text>
-      <Text className="mb-8 text-base text-neutral-500">Etapa 2 de 2 · Dados do negócio</Text>
+    <View className="flex-1 justify-center gap-4 bg-bg-base px-6">
+      <View className="mb-2 gap-1">
+        <Text className="text-2xl font-bold text-text-primary">Sobre a barbearia</Text>
+        <Text className="text-sm text-text-secondary">Etapa 2 de 2 · Dados do negócio</Text>
+      </View>
 
-      <TextInput
-        className="mb-3 rounded-xl border border-neutral-200 px-4 py-3"
-        placeholder="Nome da barbearia"
+      <TextField
+        label="Nome da barbearia"
+        placeholder="Ex: Barbearia do Bairro"
         value={tenantName}
         onChangeText={setTenantName}
       />
 
-      <Pressable
-        disabled={loading}
-        onPress={handleFinish}
-        className="items-center rounded-xl bg-neutral-900 py-4"
-      >
-        <Text className="font-semibold text-white">Concluir cadastro</Text>
-      </Pressable>
+      <Button label="Concluir cadastro" loading={loading} onPress={handleFinish} className="mt-2" />
     </View>
   );
 }

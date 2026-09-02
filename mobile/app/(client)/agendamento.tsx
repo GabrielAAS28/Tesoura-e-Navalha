@@ -1,15 +1,12 @@
 import { useMemo, useState } from "react";
-import { View, Text, FlatList, Pressable, ActivityIndicator, Alert } from "react-native";
+import { View, Text, FlatList, Pressable, ScrollView } from "react-native";
 import { useLocalSearchParams, useRouter, Stack } from "expo-router";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import {
-  createAppointment,
-  fetchBarberAppointments,
-  fetchBarberWorkingHours,
-  fetchTenantBarbers,
-  fetchTenantServices,
-} from "../../lib/queries";
+import { useQuery } from "@tanstack/react-query";
+import Svg, { Circle, Path } from "react-native-svg";
+import { fetchBarberAppointments, fetchBarberWorkingHours, fetchTenantServices } from "../../lib/queries";
 import { computeFreeSlots } from "../../lib/slots";
+import { Button } from "../../components/ui/Button";
+import { darkHeaderOptions } from "../../lib/nav";
 
 function nextDays(count: number) {
   return Array.from({ length: count }, (_, i) => {
@@ -19,19 +16,25 @@ function nextDays(count: number) {
   });
 }
 
+function ClockIcon() {
+  return (
+    <Svg width={16} height={16} viewBox="0 0 24 24" fill="none">
+      <Circle cx="12" cy="12" r="9" stroke="#A1A1AA" strokeWidth={1.8} />
+      <Path d="M12 7v5l3 3" stroke="#A1A1AA" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+  );
+}
+
 export default function AgendamentoScreen() {
-  const { tenantId, serviceId } = useLocalSearchParams<{ tenantId: string; serviceId: string }>();
+  const { tenantId, serviceId, barberId } = useLocalSearchParams<{
+    tenantId: string;
+    serviceId: string;
+    barberId: string;
+  }>();
   const router = useRouter();
 
-  const [selectedBarberId, setSelectedBarberId] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedSlot, setSelectedSlot] = useState<Date | null>(null);
-
-  const { data: barbers, isLoading: loadingBarbers } = useQuery({
-    queryKey: ["barbers", tenantId],
-    queryFn: () => fetchTenantBarbers(tenantId),
-    enabled: !!tenantId,
-  });
 
   const { data: services } = useQuery({
     queryKey: ["services", tenantId],
@@ -52,16 +55,15 @@ export default function AgendamentoScreen() {
   }, [dayStart]);
 
   const { data: workingHours } = useQuery({
-    queryKey: ["working-hours", selectedBarberId],
-    queryFn: () => fetchBarberWorkingHours(selectedBarberId as string),
-    enabled: !!selectedBarberId,
+    queryKey: ["working-hours", barberId],
+    queryFn: () => fetchBarberWorkingHours(barberId),
+    enabled: !!barberId,
   });
 
   const { data: appointments } = useQuery({
-    queryKey: ["barber-appointments", selectedBarberId, dayStart.toISOString()],
-    queryFn: () =>
-      fetchBarberAppointments(selectedBarberId as string, dayStart.toISOString(), dayEnd.toISOString()),
-    enabled: !!selectedBarberId,
+    queryKey: ["barber-appointments", barberId, dayStart.toISOString()],
+    queryFn: () => fetchBarberAppointments(barberId, dayStart.toISOString(), dayEnd.toISOString()),
+    enabled: !!barberId,
   });
 
   const slots = useMemo(() => {
@@ -74,128 +76,127 @@ export default function AgendamentoScreen() {
     });
   }, [workingHours, appointments, service, selectedDate]);
 
-  const mutation = useMutation({
-    mutationFn: () =>
-      createAppointment({
-        barber_id: selectedBarberId as string,
-        service_id: serviceId,
-        starts_at: (selectedSlot as Date).toISOString(),
-      }),
-    onSuccess: () => {
-      router.push({ pathname: "/(client)/checkout", params: { tenantId, serviceId } });
-    },
-    onError: (err: any) => {
-      Alert.alert(
-        "Horário indisponível",
-        "Esse horário acabou de ser reservado por outra pessoa. Escolha outro horário."
-      );
-      setSelectedSlot(null);
-    },
-  });
+  const morningSlots = slots.filter((s) => s.getHours() < 13);
+  const afternoonSlots = slots.filter((s) => s.getHours() >= 13);
 
-  return (
-    <View className="flex-1 bg-white px-6 pt-16">
-      <Stack.Screen options={{ headerShown: true, title: "Data & Hora" }} />
-      <Text className="mb-4 text-2xl font-bold text-neutral-900">Escolha o barbeiro</Text>
-
-      {loadingBarbers ? (
-        <ActivityIndicator />
-      ) : (
-        <FlatList
-          horizontal
-          data={barbers}
-          keyExtractor={(item) => item.id}
-          className="mb-6"
-          ItemSeparatorComponent={() => <View className="w-2" />}
-          renderItem={({ item }) => (
-            <Pressable
-              onPress={() => {
-                setSelectedBarberId(item.id);
-                setSelectedSlot(null);
-              }}
-              className={`rounded-full border px-4 py-2 ${
-                selectedBarberId === item.id
-                  ? "border-neutral-900 bg-neutral-900"
-                  : "border-neutral-200"
-              }`}
-            >
-              <Text className={selectedBarberId === item.id ? "text-white" : "text-neutral-700"}>
-                Barbeiro {item.id.slice(0, 4)}
-              </Text>
-            </Pressable>
-          )}
-        />
-      )}
-
-      <Text className="mb-4 text-lg font-semibold text-neutral-900">Escolha o dia</Text>
-      <FlatList
-        horizontal
-        data={nextDays(7)}
-        keyExtractor={(d) => d.toISOString()}
-        className="mb-6"
-        ItemSeparatorComponent={() => <View className="w-2" />}
-        renderItem={({ item }) => {
-          const isSelected = item.toDateString() === selectedDate.toDateString();
+  function renderSlotGrid(items: Date[]) {
+    return (
+      <View className="flex-row flex-wrap gap-2.5">
+        {items.map((item) => {
+          const isSelected = selectedSlot?.getTime() === item.getTime();
           return (
             <Pressable
-              onPress={() => {
-                setSelectedDate(item);
-                setSelectedSlot(null);
+              key={item.toISOString()}
+              onPress={() => setSelectedSlot(item)}
+              className="h-11 items-center justify-center rounded-md border"
+              style={{
+                width: "22.5%",
+                backgroundColor: isSelected ? "#D97706" : "transparent",
+                borderColor: isSelected ? "#D97706" : "#3F3F46",
               }}
-              className={`rounded-xl border px-4 py-3 ${
-                isSelected ? "border-neutral-900 bg-neutral-900" : "border-neutral-200"
-              }`}
             >
-              <Text className={isSelected ? "text-white" : "text-neutral-700"}>
-                {item.toLocaleDateString("pt-BR", { weekday: "short", day: "2-digit" })}
+              <Text className={`text-[13px] ${isSelected ? "font-bold text-bg-base" : "font-medium text-text-primary"}`}>
+                {item.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
               </Text>
             </Pressable>
           );
-        }}
-      />
+        })}
+      </View>
+    );
+  }
 
-      {selectedBarberId && (
-        <>
-          <Text className="mb-4 text-lg font-semibold text-neutral-900">Horários disponíveis</Text>
+  return (
+    <View className="flex-1 bg-bg-base">
+      <Stack.Screen options={{ headerShown: true, title: "Data e Horário", ...darkHeaderOptions }} />
+
+      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40, gap: 28 }}>
+        <View className="gap-3.5">
+          <Text className="text-[15px] font-semibold text-text-primary">
+            {selectedDate.toLocaleDateString("pt-BR", { month: "long", year: "numeric" })}
+          </Text>
           <FlatList
-            data={slots}
-            numColumns={3}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={nextDays(14)}
             keyExtractor={(d) => d.toISOString()}
-            columnWrapperStyle={{ gap: 8 }}
-            contentContainerStyle={{ gap: 8 }}
+            ItemSeparatorComponent={() => <View className="w-2.5" />}
             renderItem={({ item }) => {
-              const isSelected = selectedSlot?.getTime() === item.getTime();
+              const isSelected = item.toDateString() === selectedDate.toDateString();
               return (
                 <Pressable
-                  onPress={() => setSelectedSlot(item)}
-                  className={`flex-1 items-center rounded-lg border py-3 ${
-                    isSelected ? "border-neutral-900 bg-neutral-900" : "border-neutral-200"
-                  }`}
+                  onPress={() => {
+                    setSelectedDate(item);
+                    setSelectedSlot(null);
+                  }}
+                  className="h-[74px] w-[58px] items-center justify-center gap-1.5 rounded-lg border"
+                  style={{
+                    backgroundColor: isSelected ? "#D97706" : "#1E1E24",
+                    borderColor: isSelected ? "#D97706" : "#3F3F46",
+                  }}
                 >
-                  <Text className={isSelected ? "text-white" : "text-neutral-700"}>
-                    {item.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
+                  <Text
+                    className="text-[11px] font-medium"
+                    style={{ color: isSelected ? "#121214" : "#A1A1AA" }}
+                  >
+                    {item.toLocaleDateString("pt-BR", { weekday: "short" }).replace(".", "").toUpperCase()}
+                  </Text>
+                  <Text
+                    className="text-base font-bold"
+                    style={{ color: isSelected ? "#121214" : "#F4F4F5" }}
+                  >
+                    {item.getDate().toString().padStart(2, "0")}
                   </Text>
                 </Pressable>
               );
             }}
-            ListEmptyComponent={
-              <Text className="text-neutral-400">Sem horários livres neste dia.</Text>
-            }
           />
-        </>
-      )}
+        </View>
 
-      <Pressable
-        disabled={!selectedSlot || mutation.isPending}
-        onPress={() => mutation.mutate()}
-        className={`mt-6 items-center rounded-xl py-4 ${
-          selectedSlot ? "bg-neutral-900" : "bg-neutral-200"
-        }`}
+        {morningSlots.length > 0 && (
+          <View className="gap-3.5">
+            <View className="flex-row items-center gap-2">
+              <ClockIcon />
+              <Text className="text-[15px] font-semibold text-text-primary">Manhã</Text>
+            </View>
+            {renderSlotGrid(morningSlots)}
+          </View>
+        )}
+
+        {afternoonSlots.length > 0 && (
+          <View className="gap-3.5">
+            <View className="flex-row items-center gap-2">
+              <ClockIcon />
+              <Text className="text-[15px] font-semibold text-text-primary">Tarde</Text>
+            </View>
+            {renderSlotGrid(afternoonSlots)}
+          </View>
+        )}
+
+        {slots.length === 0 && (
+          <Text className="text-text-secondary">Sem horários livres neste dia.</Text>
+        )}
+      </ScrollView>
+
+      <View
+        className="absolute bottom-0 left-0 right-0 px-5 pb-7 pt-4"
+        style={{ backgroundColor: "#121214" }}
       >
-        <Text className="font-semibold text-white">
-          {mutation.isPending ? "Confirmando..." : "Confirmar agendamento"}
-        </Text>
-      </Pressable>
+        <Button
+          label="Continuar"
+          disabled={!selectedSlot}
+          onPress={() =>
+            router.push({
+              pathname: "/(client)/checkout",
+              params: {
+                tenantId,
+                serviceId,
+                barberId,
+                startsAt: (selectedSlot as Date).toISOString(),
+              },
+            })
+          }
+        />
+      </View>
     </View>
   );
 }

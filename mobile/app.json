@@ -4,9 +4,6 @@
     "slug": "navalha",
     "scheme": "navalha",
     "version": "1.0.0",
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -30,17 +27,8 @@
       "expo-router",
       "expo-status-bar",
       "expo-splash-screen",
-      "expo-web-browser"
-    ],
-    "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "efa6c023-ea35-4fb3-ab67-5b01b434f7b2"
-      }
-    },
-    "owner": "gaas28s-team",
-    "updates": {
-      "url": "https://u.expo.dev/efa6c023-ea35-4fb3-ab67-5b01b434f7b2"
-    }
+      "expo-web-browser",
+      "expo-font"
+    ]
   }
 }

@@ -5,8 +5,8 @@ import { View, ActivityIndicator } from "react-native";
 // state is known. This screen is only ever visible for a frame.
 export default function Index() {
   return (
-    <View className="flex-1 items-center justify-center bg-white">
-      <ActivityIndicator />
+    <View className="flex-1 items-center justify-center bg-bg-base">
+      <ActivityIndicator color="#D97706" />
     </View>
   );
 }

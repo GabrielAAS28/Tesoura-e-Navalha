@@ -41,6 +41,28 @@ export async function verifyPhoneOtp(phone: string, token: string) {
   return data.session;
 }
 
+export async function signInWithPhonePassword(phone: string, password: string) {
+  const { data, error } = await supabase.auth.signInWithPassword({ phone, password });
+  if (error) throw error;
+  return data.session;
+}
+
+export async function signInWithEmailPassword(email: string, password: string) {
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) throw error;
+  return data.session;
+}
+
+export async function signUpWithEmailPassword(email: string, password: string, fullName: string) {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { full_name: fullName } },
+  });
+  if (error) throw error;
+  return data.session;
+}
+
 export async function signOut() {
   await supabase.auth.signOut();
 }

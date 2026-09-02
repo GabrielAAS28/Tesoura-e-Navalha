@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, FlatList, TextInput, Pressable, Alert } from "react-native";
+import { View, Text, FlatList, Pressable, Alert } from "react-native";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   createWorkingHours,
@@ -8,6 +8,9 @@ import {
   fetchBarberWorkingHours,
 } from "../../lib/queries";
 import { useAuthStore } from "../../store/auth-store";
+import { Card } from "../../components/ui/Card";
+import { TimeField } from "../../components/ui/TimeField";
+import { Button } from "../../components/ui/Button";
 
 const WEEKDAYS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
@@ -42,74 +45,77 @@ export default function BarberHorariosScreen() {
     onError: (err: any) => Alert.alert("Erro ao salvar horário", err.message),
   });
 
+  function handleAdd() {
+    if (endTime <= startTime) {
+      Alert.alert("Horário inválido", "O fim precisa ser depois do início.");
+      return;
+    }
+    createMutation.mutate();
+  }
+
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteWorkingHours(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["working-hours", barber?.id] }),
   });
 
   return (
-    <View className="flex-1 bg-white px-6 pt-4">
-      <View className="mb-6 rounded-xl border border-neutral-100 bg-neutral-50 p-4">
-        <Text className="mb-3 font-semibold text-neutral-900">Novo horário de trabalho</Text>
+    <View className="flex-1 bg-bg-base px-6 pt-4">
+      <Card className="mb-6 gap-3">
+        <Text className="font-semibold text-text-primary">Novo horário de trabalho</Text>
 
-        <FlatList
-          horizontal
-          data={WEEKDAYS}
-          keyExtractor={(_, i) => String(i)}
-          className="mb-3"
-          ItemSeparatorComponent={() => <View className="w-2" />}
-          renderItem={({ item, index }) => (
-            <Pressable
-              onPress={() => setWeekday(index)}
-              className={`rounded-full border px-3 py-2 ${
-                weekday === index ? "border-neutral-900 bg-neutral-900" : "border-neutral-200"
-              }`}
-            >
-              <Text className={weekday === index ? "text-white" : "text-neutral-700"}>{item}</Text>
-            </Pressable>
-          )}
-        />
-
-        <View className="mb-3 flex-row gap-2">
-          <TextInput
-            className="flex-1 rounded-lg border border-neutral-200 bg-white px-3 py-2"
-            placeholder="Início (HH:MM)"
-            value={startTime}
-            onChangeText={setStartTime}
-          />
-          <TextInput
-            className="flex-1 rounded-lg border border-neutral-200 bg-white px-3 py-2"
-            placeholder="Fim (HH:MM)"
-            value={endTime}
-            onChangeText={setEndTime}
+        <View className="h-11">
+          <FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={WEEKDAYS}
+            keyExtractor={(_, i) => String(i)}
+            ItemSeparatorComponent={() => <View className="w-2" />}
+            renderItem={({ item, index }) => (
+              <Pressable
+                onPress={() => setWeekday(index)}
+                className={`h-11 items-center justify-center rounded-full border px-3 ${
+                  weekday === index ? "border-accent bg-accent" : "border-border"
+                }`}
+              >
+                <Text
+                  className={weekday === index ? "font-semibold text-bg-base" : "text-text-secondary"}
+                >
+                  {item}
+                </Text>
+              </Pressable>
+            )}
           />
         </View>
 
-        <Pressable
-          disabled={createMutation.isPending}
-          onPress={() => createMutation.mutate()}
-          className="items-center rounded-lg bg-neutral-900 py-3"
-        >
-          <Text className="font-semibold text-white">Adicionar</Text>
-        </Pressable>
-      </View>
+        <View className="flex-row gap-2">
+          <View className="flex-1">
+            <TimeField label="Início" value={startTime} onChangeValue={setStartTime} />
+          </View>
+          <View className="flex-1">
+            <TimeField label="Fim" value={endTime} onChangeValue={setEndTime} />
+          </View>
+        </View>
+
+        <Button label="Adicionar" loading={createMutation.isPending} onPress={handleAdd} />
+      </Card>
 
       <FlatList
+        className="flex-1"
         data={hours}
         keyExtractor={(item) => item.id}
         ItemSeparatorComponent={() => <View className="h-3" />}
         renderItem={({ item }) => (
-          <View className="flex-row items-center justify-between rounded-xl border border-neutral-100 p-4">
-            <Text className="text-neutral-900">
+          <Card className="flex-row items-center justify-between">
+            <Text className="text-text-primary">
               {WEEKDAYS[item.weekday]} · {item.start_time} - {item.end_time}
             </Text>
             <Pressable onPress={() => deleteMutation.mutate(item.id)}>
-              <Text className="text-red-500">Remover</Text>
+              <Text className="font-medium text-status-error">Remover</Text>
             </Pressable>
-          </View>
+          </Card>
         )}
         ListEmptyComponent={
-          <Text className="text-neutral-400">Nenhum horário cadastrado ainda.</Text>
+          <Text className="text-text-secondary">Nenhum horário cadastrado ainda.</Text>
         }
       />
     </View>
