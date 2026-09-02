@@ -13,7 +13,7 @@ export default function CheckoutScreen() {
       <Text className="mb-2 text-2xl font-bold text-neutral-900">Agendamento confirmado!</Text>
       <Text className="mb-8 text-center text-neutral-500">
         O pagamento é feito diretamente na barbearia. Você pode acompanhar seus horários em
-        "Agendamentos".
+        &ldquo;Agendamentos&rdquo;.
       </Text>
       <Pressable
         onPress={() => router.replace("/(client)/agendamentos")}
