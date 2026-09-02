@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    .scroller::-webkit-scrollbar { display: none; }
+  </style>
+</helmet>
+<div style="width:390px;height:844px;background:#121214;display:flex;flex-direction:column;overflow:hidden;position:relative;">
+
+  <div style="padding:28px 20px 4px;flex-shrink:0;">
+    <div style="font-size:22px;font-weight:600;color:#F4F4F5;">Meus Agendamentos</div>
+  </div>
+
+  <div style="display:flex;gap:8px;padding:16px 20px;flex-shrink:0;">
+    <div style="flex:1;height:44px;border-radius:12px;background:#D97706;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#121214;">Próximos</div>
+    <div style="flex:1;height:44px;border-radius:12px;background:#1E1E24;border:1px solid #3F3F46;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#A1A1AA;">Histórico</div>
+  </div>
+
+  <div class="scroller" style="flex:1;overflow-y:auto;padding:8px 20px 108px;display:flex;flex-direction:column;gap:12px;">
+
+    <div style="background:#1E1E24;border:1px solid #3F3F46;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;flex-direction:column;gap:2px;">
+          <div style="font-size:14px;font-weight:600;color:#F4F4F5;">Corte Clássico</div>
+          <div style="font-size:12px;color:#A1A1AA;">Qua, 11 de março · 09:30</div>
+        </div>
+        <div style="height:26px;padding:0 12px;border-radius:999px;background:rgba(217,119,6,0.15);display:flex;align-items:center;">
+          <span style="font-size:11px;font-weight:600;color:#D97706;">Confirmado</span>
+        </div>
+      </div>
+      <div style="height:1px;background:#3F3F46;"></div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:32px;height:32px;border-radius:999px;background:linear-gradient(135deg,#3F3F46,#26262E);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#F4F4F5;">RC</div>
+        <div style="font-size:12px;color:#A1A1AA;">Rafael C. · R$ 45,00</div>
+      </div>
+    </div>
+
+    <div style="background:#1E1E24;border:1px solid #3F3F46;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;flex-direction:column;gap:2px;">
+          <div style="font-size:14px;font-weight:600;color:#F4F4F5;">Combo Corte + Barba</div>
+          <div style="font-size:12px;color:#A1A1AA;">Sex, 20 de março · 15:00</div>
+        </div>
+        <div style="height:26px;padding:0 12px;border-radius:999px;background:rgba(161,161,170,0.15);display:flex;align-items:center;">
+          <span style="font-size:11px;font-weight:600;color:#A1A1AA;">Pendente</span>
+        </div>
+      </div>
+      <div style="height:1px;background:#3F3F46;"></div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:32px;height:32px;border-radius:999px;background:linear-gradient(135deg,#3F3F46,#26262E);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#F4F4F5;">TL</div>
+        <div style="font-size:12px;color:#A1A1AA;">Thiago L. · R$ 65,00</div>
+      </div>
+    </div>
+
+    <div style="background:#1E1E24;border:1px solid #3F3F46;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:14px;opacity:0.7;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;flex-direction:column;gap:2px;">
+          <div style="font-size:14px;font-weight:600;color:#F4F4F5;">Barba</div>
+          <div style="font-size:12px;color:#A1A1AA;">Ter, 25 de março · 11:00</div>
+        </div>
+        <div style="height:26px;padding:0 12px;border-radius:999px;background:rgba(239,68,68,0.15);display:flex;align-items:center;">
+          <span style="font-size:11px;font-weight:600;color:#EF4444;">Cancelado</span>
+        </div>
+      </div>
+      <div style="height:1px;background:#3F3F46;"></div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:32px;height:32px;border-radius:999px;background:linear-gradient(135deg,#3F3F46,#26262E);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#F4F4F5;">DA</div>
+        <div style="font-size:12px;color:#A1A1AA;">Diego A. · R$ 30,00</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="position:absolute;bottom:0;left:0;right:0;height:84px;background:#1E1E24;border-top:1px solid #3F3F46;display:flex;align-items:center;justify-content:space-around;padding-bottom:16px;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#A1A1AA;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg>
+      <span style="font-size:11px;font-weight:500;">Início</span>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#D97706;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>
+      <span style="font-size:11px;font-weight:600;">Agenda</span>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#A1A1AA;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+      <span style="font-size:11px;font-weight:500;">Perfil</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

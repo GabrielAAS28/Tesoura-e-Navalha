@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    a { color: #D97706; text-decoration: none; }
+    a:hover { color: #B45309; }
+    .scroller::-webkit-scrollbar { display: none; }
+  </style>
+</helmet>
+<div style="width:390px;height:844px;background:#121214;display:flex;flex-direction:column;overflow:hidden;position:relative;">
+
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:28px 20px 16px;flex-shrink:0;">
+    <div style="display:flex;flex-direction:column;gap:2px;">
+      <div style="font-size:22px;font-weight:600;color:#F4F4F5;">Olá, Marcos</div>
+      <div style="font-size:14px;font-weight:400;color:#A1A1AA;">Pronto para o próximo corte?</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:44px;height:44px;border-radius:12px;background:#1E1E24;border:1px solid #3F3F46;display:flex;align-items:center;justify-content:center;color:#F4F4F5;">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+      </div>
+      <div style="width:44px;height:44px;border-radius:999px;background:linear-gradient(135deg,#D97706,#B45309);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#121214;">MS</div>
+    </div>
+  </div>
+
+  <div class="scroller" style="flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 20px 108px;display:flex;flex-direction:column;gap:28px;">
+
+    <div style="border-radius:16px;background:linear-gradient(135deg,#D97706,#B45309);padding:22px;display:flex;flex-direction:column;gap:14px;">
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <div style="font-size:18px;font-weight:700;color:#121214;">Agendamento Rápido</div>
+        <div style="font-size:13px;font-weight:500;color:#121214;opacity:0.75;">Marque seu horário em poucos segundos</div>
+      </div>
+      <button style="align-self:flex-start;height:44px;padding:0 18px;border:none;border-radius:12px;background:#121214;color:#F4F4F5;font-family:inherit;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;cursor:pointer;">
+        Agendar Agora
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-size:18px;font-weight:600;color:#F4F4F5;">Serviços em destaque</div>
+        <a href="#" style="font-size:13px;font-weight:600;">Ver todos</a>
+      </div>
+      <div class="scroller" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;">
+        <div style="flex:0 0 152px;background:#1E1E24;border:1px solid #3F3F46;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:28px;">
+          <div style="width:40px;height:40px;border-radius:12px;background:rgba(217,119,6,0.15);display:flex;align-items:center;justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.5 15.5M8.7 9.3L20 20"/></svg>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <div style="font-size:14px;font-weight:600;color:#F4F4F5;">Corte Clássico</div>
+            <div style="font-size:12px;font-weight:400;color:#A1A1AA;">40min · R$ 45</div>
+          </div>
+        </div>
+        <div style="flex:0 0 152px;background:#1E1E24;border:1px solid #3F3F46;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:28px;">
+          <div style="width:40px;height:40px;border-radius:12px;background:rgba(217,119,6,0.15);display:flex;align-items:center;justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15c1-6 4-11 8-11s7 5 8 11"/><path d="M4 15c0 3 3 6 8 6s8-3 8-6"/></svg>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <div style="font-size:14px;font-weight:600;color:#F4F4F5;">Barba</div>
+            <div style="font-size:12px;font-weight:400;color:#A1A1AA;">25min · R$ 30</div>
+          </div>
+        </div>
+        <div style="flex:0 0 152px;background:#1E1E24;border:1px solid #3F3F46;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:28px;">
+          <div style="width:40px;height:40px;border-radius:12px;background:rgba(217,119,6,0.15);display:flex;align-items:center;justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M9 12h6M12 9v6"/></svg>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <div style="font-size:14px;font-weight:600;color:#F4F4F5;">Combo</div>
+            <div style="font-size:12px;font-weight:400;color:#A1A1AA;">60min · R$ 65</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div style="font-size:18px;font-weight:600;color:#F4F4F5;">Barbeiros favoritos</div>
+      <div class="scroller" style="display:flex;gap:14px;overflow-x:auto;padding-bottom:4px;">
+        <div style="flex:0 0 96px;display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="width:64px;height:64px;border-radius:999px;background:linear-gradient(135deg,#3F3F46,#26262E);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#F4F4F5;border:2px solid #D97706;">RC</div>
+          <div style="font-size:13px;font-weight:600;color:#F4F4F5;text-align:center;">Rafael C.</div>
+          <div style="display:flex;align-items:center;gap:3px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="#D97706"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+            <span style="font-size:12px;color:#A1A1AA;">4.9</span>
+          </div>
+        </div>
+        <div style="flex:0 0 96px;display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="width:64px;height:64px;border-radius:999px;background:linear-gradient(135deg,#3F3F46,#26262E);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#F4F4F5;">TL</div>
+          <div style="font-size:13px;font-weight:600;color:#F4F4F5;text-align:center;">Thiago L.</div>
+          <div style="display:flex;align-items:center;gap:3px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="#D97706"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+            <span style="font-size:12px;color:#A1A1AA;">4.8</span>
+          </div>
+        </div>
+        <div style="flex:0 0 96px;display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="width:64px;height:64px;border-radius:999px;background:linear-gradient(135deg,#3F3F46,#26262E);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#F4F4F5;">DA</div>
+          <div style="font-size:13px;font-weight:600;color:#F4F4F5;text-align:center;">Diego A.</div>
+          <div style="display:flex;align-items:center;gap:3px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="#D97706"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+            <span style="font-size:12px;color:#A1A1AA;">4.7</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="position:absolute;bottom:0;left:0;right:0;height:84px;background:#1E1E24;border-top:1px solid #3F3F46;display:flex;align-items:center;justify-content:space-around;padding-bottom:16px;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#D97706;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg>
+      <span style="font-size:11px;font-weight:600;">Início</span>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#A1A1AA;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>
+      <span style="font-size:11px;font-weight:500;">Agenda</span>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#A1A1AA;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+      <span style="font-size:11px;font-weight:500;">Perfil</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

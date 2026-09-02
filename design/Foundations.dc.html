@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+  </style>
+</helmet>
+<div style="width:1400px;min-height:900px;background:#121214;padding:48px;display:flex;flex-direction:column;gap:40px;">
+
+  <div style="display:flex;flex-direction:column;gap:4px;">
+    <div style="font-size:28px;font-weight:700;color:#F4F4F5;">Barbearia do Bairro</div>
+    <div style="font-size:15px;color:#A1A1AA;">Design System · Mobile App (Dark Theme)</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:48px;">
+
+    <div style="display:flex;flex-direction:column;gap:40px;">
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div style="font-size:18px;font-weight:600;color:#F4F4F5;">Cores</div>
+        <div style="display:grid;grid-template-columns:repeat(5, minmax(0, 1fr));gap:14px;">
+          <div style="display:flex;flex-direction:column;gap:8px;"><div style="height:64px;border-radius:12px;background:#121214;border:1px solid #3F3F46;"></div><div style="font-size:11px;color:#A1A1AA;">bg/base</div></div>
+          <div style="display:flex;flex-direction:column;gap:8px;"><div style="height:64px;border-radius:12px;background:#1E1E24;"></div><div style="font-size:11px;color:#A1A1AA;">bg/surface</div></div>
+          <div style="display:flex;flex-direction:column;gap:8px;"><div style="height:64px;border-radius:12px;background:#3F3F46;"></div><div style="font-size:11px;color:#A1A1AA;">border/default</div></div>
+          <div style="display:flex;flex-direction:column;gap:8px;"><div style="height:64px;border-radius:12px;background:#F4F4F5;"></div><div style="font-size:11px;color:#A1A1AA;">text/primary</div></div>
+          <div style="display:flex;flex-direction:column;gap:8px;"><div style="height:64px;border-radius:12px;background:#A1A1AA;"></div><div style="font-size:11px;color:#A1A1AA;">text/secondary</div></div>
+          <div style="display:flex;flex-direction:column;gap:8px;"><div style="height:64px;border-radius:12px;background:#D97706;"></div><div style="font-size:11px;color:#A1A1AA;">accent/default</div></div>
+          <div style="display:flex;flex-direction:column;gap:8px;"><div style="height:64px;border-radius:12px;background:#B45309;"></div><div style="font-size:11px;color:#A1A1AA;">accent/hover</div></div>
+          <div style="display:flex;flex-direction:column;gap:8px;"><div style="height:64px;border-radius:12px;background:#22C55E;"></div><div style="font-size:11px;color:#A1A1AA;">status/success</div></div>
+          <div style="display:flex;flex-direction:column;gap:8px;"><div style="height:64px;border-radius:12px;background:#EF4444;"></div><div style="font-size:11px;color:#A1A1AA;">status/error</div></div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div style="font-size:18px;font-weight:600;color:#F4F4F5;">Tipografia — Plus Jakarta Sans</div>
+        <div style="display:flex;flex-direction:column;gap:14px;background:#1E1E24;border:1px solid #3F3F46;border-radius:16px;padding:20px;">
+          <div style="font-size:28px;font-weight:700;color:#F4F4F5;">Display / 28 Bold</div>
+          <div style="font-size:22px;font-weight:600;color:#F4F4F5;">H1 / 22 SemiBold</div>
+          <div style="font-size:18px;font-weight:600;color:#F4F4F5;">H2 / 18 SemiBold</div>
+          <div style="font-size:15px;font-weight:400;color:#F4F4F5;">Body / 15 Regular</div>
+          <div style="font-size:13px;font-weight:400;color:#A1A1AA;">Caption / 13 Regular</div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div style="font-size:18px;font-weight:600;color:#F4F4F5;">Spacing &amp; Radius</div>
+        <div style="display:flex;align-items:flex-end;gap:20px;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:4px;height:4px;background:#D97706;border-radius:2px;"></div><div style="font-size:10px;color:#A1A1AA;">xs</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:8px;height:8px;background:#D97706;border-radius:2px;"></div><div style="font-size:10px;color:#A1A1AA;">sm</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:16px;height:16px;background:#D97706;border-radius:2px;"></div><div style="font-size:10px;color:#A1A1AA;">md</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:24px;height:24px;background:#D97706;border-radius:2px;"></div><div style="font-size:10px;color:#A1A1AA;">lg</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:32px;height:32px;background:#D97706;border-radius:2px;"></div><div style="font-size:10px;color:#A1A1AA;">xl</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:40px;height:40px;background:#D97706;border-radius:2px;"></div><div style="font-size:10px;color:#A1A1AA;">2xl</div></div>
+          <div style="width:1px;height:40px;background:#3F3F46;"></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:40px;height:40px;background:#1E1E24;border:1px solid #3F3F46;border-radius:8px;"></div><div style="font-size:10px;color:#A1A1AA;">radius/sm</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:40px;height:40px;background:#1E1E24;border:1px solid #3F3F46;border-radius:12px;"></div><div style="font-size:10px;color:#A1A1AA;">radius/md</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:40px;height:40px;background:#1E1E24;border:1px solid #3F3F46;border-radius:16px;"></div><div style="font-size:10px;color:#A1A1AA;">radius/lg</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:40px;height:40px;background:#1E1E24;border:1px solid #3F3F46;border-radius:999px;"></div><div style="font-size:10px;color:#A1A1AA;">radius/full</div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:40px;">
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div style="font-size:18px;font-weight:600;color:#F4F4F5;">Botões</div>
+        <div style="display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:14px;align-items:center;">
+          <button style="height:44px;border:none;border-radius:12px;background:#D97706;color:#121214;font-family:inherit;font-size:13px;font-weight:600;">Primary</button>
+          <button style="height:44px;border:none;border-radius:12px;background:#B45309;color:#121214;font-family:inherit;font-size:13px;font-weight:600;">Pressed</button>
+          <button style="height:44px;border:none;border-radius:12px;background:#D97706;color:#121214;font-family:inherit;font-size:13px;font-weight:600;opacity:0.4;">Disabled</button>
+
+          <button style="height:44px;border:1.5px solid #D97706;border-radius:12px;background:transparent;color:#D97706;font-family:inherit;font-size:13px;font-weight:600;">Secondary</button>
+          <button style="height:44px;border:1.5px solid #B45309;border-radius:12px;background:transparent;color:#B45309;font-family:inherit;font-size:13px;font-weight:600;">Pressed</button>
+          <button style="height:44px;border:1.5px solid #D97706;border-radius:12px;background:transparent;color:#D97706;font-family:inherit;font-size:13px;font-weight:600;opacity:0.4;">Disabled</button>
+
+          <button style="height:44px;border:none;border-radius:12px;background:transparent;color:#F4F4F5;font-family:inherit;font-size:13px;font-weight:600;">Ghost</button>
+          <button style="height:44px;border:none;border-radius:12px;background:transparent;color:#D97706;font-family:inherit;font-size:13px;font-weight:600;">Pressed</button>
+          <button style="height:44px;border:none;border-radius:12px;background:transparent;color:#F4F4F5;font-family:inherit;font-size:13px;font-weight:600;opacity:0.4;">Disabled</button>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div style="font-size:18px;font-weight:600;color:#F4F4F5;">Status Badge</div>
+        <div style="display:flex;gap:10px;">
+          <div style="height:26px;padding:0 12px;border-radius:999px;background:rgba(217,119,6,0.15);display:flex;align-items:center;"><span style="font-size:11px;font-weight:600;color:#D97706;">Confirmado</span></div>
+          <div style="height:26px;padding:0 12px;border-radius:999px;background:rgba(161,161,170,0.15);display:flex;align-items:center;"><span style="font-size:11px;font-weight:600;color:#A1A1AA;">Pendente</span></div>
+          <div style="height:26px;padding:0 12px;border-radius:999px;background:rgba(34,197,94,0.15);display:flex;align-items:center;"><span style="font-size:11px;font-weight:600;color:#22C55E;">Concluído</span></div>
+          <div style="height:26px;padding:0 12px;border-radius:999px;background:rgba(239,68,68,0.15);display:flex;align-items:center;"><span style="font-size:11px;font-weight:600;color:#EF4444;">Cancelado</span></div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div style="font-size:18px;font-weight:600;color:#F4F4F5;">Cards</div>
+        <div style="display:flex;gap:14px;">
+          <div style="width:160px;background:#1E1E24;border:1px solid #3F3F46;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:24px;">
+            <div style="width:40px;height:40px;border-radius:12px;background:rgba(217,119,6,0.15);display:flex;align-items:center;justify-content:center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.5 15.5M8.7 9.3L20 20"/></svg>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <div style="font-size:14px;font-weight:600;color:#F4F4F5;">Service Card</div>
+              <div style="font-size:12px;color:#A1A1AA;">40min · R$ 45</div>
+            </div>
+          </div>
+          <div style="width:120px;background:#1E1E24;border:1px solid #3F3F46;border-radius:16px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:10px;">
+            <div style="width:48px;height:48px;border-radius:999px;background:linear-gradient(135deg,#3F3F46,#26262E);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#F4F4F5;">BC</div>
+            <div style="font-size:13px;font-weight:600;color:#F4F4F5;">Barber Card</div>
+            <div style="display:flex;align-items:center;gap:3px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#D97706"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+              <span style="font-size:12px;color:#A1A1AA;">4.9</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

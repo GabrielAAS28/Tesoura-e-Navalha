@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    a { color: #D97706; text-decoration: none; }
+    .scroller::-webkit-scrollbar { display: none; }
+    input::placeholder { color: #A1A1AA; opacity: 1; }
+  </style>
+</helmet>
+<div style="width:390px;height:844px;background:#121214;display:flex;flex-direction:column;overflow:hidden;position:relative;">
+
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:28px 20px 12px;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <div style="width:44px;height:44px;border-radius:12px;background:#1E1E24;border:1px solid #3F3F46;display:flex;align-items:center;justify-content:center;color:#F4F4F5;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+      </div>
+      <div style="font-size:20px;font-weight:600;color:#F4F4F5;">Cadastro de Profissional</div>
+    </div>
+    <div style="height:26px;padding:0 12px;border-radius:999px;background:rgba(217,119,6,0.15);display:flex;align-items:center;flex-shrink:0;">
+      <span style="font-size:11px;font-weight:600;color:#D97706;">2/2</span>
+    </div>
+  </div>
+
+  <div class="scroller" style="flex:1;overflow-y:auto;padding:16px 20px 40px;display:flex;flex-direction:column;gap:28px;">
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div style="font-size:15px;font-weight:600;color:#F4F4F5;">Endereço do local de trabalho</div>
+
+      <div style="display:flex;gap:10px;">
+        <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+          <div style="font-size:12px;font-weight:600;color:#A1A1AA;">CEP</div>
+          <div style="height:52px;border-radius:12px;background:#1E1E24;border:1px solid #3F3F46;display:flex;align-items:center;padding:0 14px;">
+            <input type="text" placeholder="00000-000" style="flex:1;border:none;background:transparent;outline:none;font-family:inherit;font-size:14px;font-weight:500;color:#F4F4F5;">
+          </div>
+        </div>
+        <div style="flex:2;display:flex;flex-direction:column;gap:8px;">
+          <div style="font-size:12px;font-weight:600;color:#A1A1AA;">Cidade</div>
+          <div style="height:52px;border-radius:12px;background:#1E1E24;border:1px solid #3F3F46;display:flex;align-items:center;padding:0 14px;">
+            <input type="text" placeholder="São Paulo" style="flex:1;border:none;background:transparent;outline:none;font-family:inherit;font-size:14px;font-weight:500;color:#F4F4F5;">
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:12px;font-weight:600;color:#A1A1AA;">Endereço</div>
+        <div style="height:52px;border-radius:12px;background:#1E1E24;border:1px solid #3F3F46;display:flex;align-items:center;padding:0 14px;">
+          <input type="text" placeholder="Rua, avenida..." style="flex:1;border:none;background:transparent;outline:none;font-family:inherit;font-size:14px;font-weight:500;color:#F4F4F5;">
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;">
+        <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+          <div style="font-size:12px;font-weight:600;color:#A1A1AA;">Número</div>
+          <div style="height:52px;border-radius:12px;background:#1E1E24;border:1px solid #3F3F46;display:flex;align-items:center;padding:0 14px;">
+            <input type="text" placeholder="123" style="flex:1;border:none;background:transparent;outline:none;font-family:inherit;font-size:14px;font-weight:500;color:#F4F4F5;">
+          </div>
+        </div>
+        <div style="flex:2;display:flex;flex-direction:column;gap:8px;">
+          <div style="font-size:12px;font-weight:600;color:#A1A1AA;">Bairro</div>
+          <div style="height:52px;border-radius:12px;background:#1E1E24;border:1px solid #3F3F46;display:flex;align-items:center;padding:0 14px;">
+            <input type="text" placeholder="Centro" style="flex:1;border:none;background:transparent;outline:none;font-family:inherit;font-size:14px;font-weight:500;color:#F4F4F5;">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div style="font-size:15px;font-weight:600;color:#F4F4F5;">Dados para recebimento</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:12px;font-weight:600;color:#A1A1AA;">Chave PIX</div>
+        <div style="height:52px;border-radius:12px;background:#1E1E24;border:1px solid #3F3F46;display:flex;align-items:center;padding:0 14px;gap:10px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#D97706" stroke="none" style="flex-shrink:0;"><path d="M13 2L3 14h7l-1 8 11-14h-7z"/></svg>
+          <input type="text" placeholder="CPF, e-mail, telefone ou chave aleatória" style="flex:1;border:none;background:transparent;outline:none;font-family:inherit;font-size:14px;font-weight:500;color:#F4F4F5;">
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div style="font-size:15px;font-weight:600;color:#F4F4F5;">Documento de identificação</div>
+      <div style="height:104px;border-radius:16px;background:#1E1E24;border:1.5px dashed #3F3F46;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A1A1AA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+        <div style="font-size:12px;font-weight:600;color:#A1A1AA;">Enviar foto do RG ou CNH</div>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:12px;min-height:44px;">
+      <div style="width:22px;height:22px;border-radius:8px;background:#D97706;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#121214" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <div style="font-size:12px;font-weight:500;color:#A1A1AA;line-height:1.5;">
+        Li e aceito os <a href="#">Termos de Uso</a> e a <a href="#">Política de Privacidade</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="position:absolute;bottom:0;left:0;right:0;padding:16px 20px 28px;background:linear-gradient(180deg,rgba(18,18,20,0) 0%,#121214 30%);">
+    <button style="width:100%;height:52px;border:none;border-radius:12px;background:#D97706;color:#121214;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;">Finalizar Cadastro</button>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

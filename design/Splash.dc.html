@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    a { color: #D97706; text-decoration: none; }
+    a:hover { color: #B45309; }
+  </style>
+</helmet>
+<div style="width:390px;height:844px;background:#121214;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:space-between;">
+
+  <div style="position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:520px;height:520px;border-radius:999px;background:radial-gradient(circle, rgba(217,119,6,0.28) 0%, rgba(217,119,6,0) 70%);"></div>
+
+  <div></div>
+
+  <div style="display:flex;flex-direction:column;align-items:center;gap:24px;z-index:1;">
+    <div style="width:88px;height:88px;border-radius:24px;background:#1E1E24;border:1.5px solid #3F3F46;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.35);">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>
+        <path d="M20 4L8.5 15.5M8.7 9.3L11 11.5M20 20L11.7 12.4"/>
+      </svg>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+      <div style="font-size:28px;font-weight:700;color:#F4F4F5;letter-spacing:-0.3px;text-align:center;">Barbearia do Bairro</div>
+      <div style="font-size:15px;font-weight:400;color:#A1A1AA;">Seu estilo, seu tempo.</div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;padding:0 24px 48px;z-index:1;">
+    <button style="width:100%;height:52px;border:none;border-radius:12px;background:#D97706;color:#121214;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;">Entrar</button>
+    <a href="#" style="font-size:14px;font-weight:500;color:#A1A1AA;padding:8px;">Criar conta gratuita</a>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
