@@ -3,6 +3,14 @@ import { useEffect } from "react";
 import { View, Text, ActivityIndicator } from "react-native";
 import { Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import {
+  useFonts,
+  PlusJakartaSans_400Regular,
+  PlusJakartaSans_500Medium,
+  PlusJakartaSans_600SemiBold,
+  PlusJakartaSans_700Bold,
+  PlusJakartaSans_800ExtraBold,
+} from "@expo-google-fonts/plus-jakarta-sans";
 import { supabase } from "../lib/supabase";
 import { fetchProfile } from "../lib/queries";
 import { useAuthStore } from "../store/auth-store";
@@ -42,9 +50,9 @@ function RootNavigation() {
 
   if (isInitializing) {
     return (
-      <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator size="large" />
-        <Text className="mt-4 text-gray-500">Carregando Navalha...</Text>
+      <View className="flex-1 items-center justify-center bg-bg-base">
+        <ActivityIndicator size="large" color="#D97706" />
+        <Text className="mt-4 font-medium text-text-secondary">Carregando Navalha...</Text>
       </View>
     );
   }
@@ -53,9 +61,21 @@ function RootNavigation() {
 }
 
 export default function RootLayout() {
+  const [fontsLoaded] = useFonts({
+    PlusJakartaSans_400Regular,
+    PlusJakartaSans_500Medium,
+    PlusJakartaSans_600SemiBold,
+    PlusJakartaSans_700Bold,
+    PlusJakartaSans_800ExtraBold,
+  });
+
+  if (!fontsLoaded) {
+    return <View className="flex-1 bg-bg-base" />;
+  }
+
   return (
     <QueryProvider>
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
       <RootNavigation />
     </QueryProvider>
   );

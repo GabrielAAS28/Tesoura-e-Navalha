@@ -1,5 +1,14 @@
 import { supabase } from "./supabase";
-import type { Appointment, Barber, Profile, Service, Tenant, WorkingHours } from "./types";
+import type {
+  AppointmentStatus,
+  AppointmentWithDetails,
+  Barber,
+  BarberWithProfile,
+  Profile,
+  Service,
+  Tenant,
+  WorkingHours,
+} from "./types";
 
 export async function fetchTenants(): Promise<Tenant[]> {
   const { data, error } = await supabase.from("tenants").select("*").order("name");
@@ -40,14 +49,14 @@ export async function fetchBarberByProfileId(profileId: string): Promise<Barber 
   return data;
 }
 
-export async function fetchTenantBarbers(tenantId: string): Promise<Barber[]> {
+export async function fetchTenantBarbers(tenantId: string): Promise<BarberWithProfile[]> {
   const { data, error } = await supabase
     .from("barbers")
-    .select("*")
+    .select("*, profile:profiles(full_name)")
     .eq("tenant_id", tenantId);
 
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []) as unknown as BarberWithProfile[];
 }
 
 export async function createService(params: {
@@ -93,32 +102,40 @@ export async function fetchBarberWorkingHours(barberId: string): Promise<Working
   return data ?? [];
 }
 
-export async function fetchClientAppointments(clientId: string): Promise<Appointment[]> {
+export async function fetchClientAppointments(clientId: string): Promise<AppointmentWithDetails[]> {
   const { data, error } = await supabase
     .from("appointments")
-    .select("*")
+    .select("*, service:services(name, price_cents), barber:barbers(profile:profiles(full_name))")
     .eq("client_id", clientId)
     .order("starts_at", { ascending: false });
 
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []) as unknown as AppointmentWithDetails[];
 }
 
 export async function fetchBarberAppointments(
   barberId: string,
   dayStart: string,
   dayEnd: string
-): Promise<Appointment[]> {
+): Promise<AppointmentWithDetails[]> {
   const { data, error } = await supabase
     .from("appointments")
-    .select("*")
+    .select("*, service:services(name, price_cents), client:profiles!appointments_client_id_fkey(full_name)")
     .eq("barber_id", barberId)
     .gte("starts_at", dayStart)
     .lt("starts_at", dayEnd)
     .order("starts_at");
 
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []) as unknown as AppointmentWithDetails[];
+}
+
+export async function updateAppointmentStatus(
+  id: string,
+  status: AppointmentStatus
+): Promise<void> {
+  const { error } = await supabase.from("appointments").update({ status }).eq("id", id);
+  if (error) throw error;
 }
 
 export async function createAppointment(params: {

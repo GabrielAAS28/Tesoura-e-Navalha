@@ -30,6 +30,10 @@ export type Barber = {
   bio: string | null;
 };
 
+export type BarberWithProfile = Barber & {
+  profile: { full_name: string | null } | null;
+};
+
 export type WorkingHours = {
   id: string;
   barber_id: string;
@@ -49,4 +53,10 @@ export type Appointment = {
   starts_at: string;
   ends_at: string;
   status: AppointmentStatus;
+};
+
+export type AppointmentWithDetails = Appointment & {
+  service: { name: string; price_cents: number } | null;
+  barber: { profile: { full_name: string | null } | null } | null;
+  client: { full_name: string | null } | null;
 };

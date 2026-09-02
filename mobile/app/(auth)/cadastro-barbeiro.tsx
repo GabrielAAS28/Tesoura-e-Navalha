@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { View, Text, TextInput, Pressable, Alert } from "react-native";
+import { View, Text, Alert, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { sendPhoneOtp, verifyPhoneOtp } from "../../lib/auth";
+import { Button } from "../../components/ui/Button";
+import { TextField } from "../../components/ui/TextField";
 
 export default function CadastroBarbeiroScreen() {
   const router = useRouter();
@@ -43,20 +45,25 @@ export default function CadastroBarbeiroScreen() {
   }
 
   return (
-    <View className="flex-1 justify-center bg-white px-6">
-      <Text className="mb-1 text-2xl font-bold text-neutral-900">Cadastre sua barbearia</Text>
-      <Text className="mb-8 text-base text-neutral-500">Etapa 1 de 2 · Seus dados</Text>
+    <ScrollView
+      className="flex-1 bg-bg-base"
+      contentContainerStyle={{ padding: 24, paddingTop: 72, gap: 16 }}
+    >
+      <View className="mb-2 gap-1">
+        <Text className="text-2xl font-bold text-text-primary">Cadastre sua barbearia</Text>
+        <Text className="text-sm text-text-secondary">Etapa 1 de 2 · Seus dados</Text>
+      </View>
 
-      <TextInput
-        className="mb-3 rounded-xl border border-neutral-200 px-4 py-3"
-        placeholder="Seu nome completo"
+      <TextField
+        label="Seu nome completo"
+        placeholder="Seu nome"
         value={fullName}
         onChangeText={setFullName}
         editable={!otpSent}
       />
-      <TextInput
-        className="mb-3 rounded-xl border border-neutral-200 px-4 py-3"
-        placeholder="Telefone (com DDD)"
+      <TextField
+        label="Número de telefone"
+        placeholder="(11) 98765-4321"
         keyboardType="phone-pad"
         value={phone}
         onChangeText={setPhone}
@@ -64,24 +71,21 @@ export default function CadastroBarbeiroScreen() {
       />
 
       {otpSent && (
-        <TextInput
-          className="mb-3 rounded-xl border border-neutral-200 px-4 py-3"
-          placeholder="Código recebido por SMS"
+        <TextField
+          label="Código recebido por SMS"
+          placeholder="000000"
           keyboardType="number-pad"
           value={otp}
           onChangeText={setOtp}
         />
       )}
 
-      <Pressable
-        disabled={loading}
+      <Button
+        label={otpSent ? "Confirmar e continuar" : "Enviar código"}
+        loading={loading}
         onPress={otpSent ? handleVerifyOtp : handleSendOtp}
-        className="items-center rounded-xl bg-neutral-900 py-4"
-      >
-        <Text className="font-semibold text-white">
-          {otpSent ? "Confirmar e continuar" : "Enviar código"}
-        </Text>
-      </Pressable>
-    </View>
+        className="mt-2"
+      />
+    </ScrollView>
   );
 }
