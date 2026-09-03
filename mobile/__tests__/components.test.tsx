@@ -4,6 +4,7 @@ import {ThemeProvider} from 'styled-components/native';
 import theme from '~/styles/theme';
 import Button from '~/components/Button';
 import Badge from '~/components/Badge';
+import ServiceCard from '~/components/ServiceCard';
 
 const wrap = (ui: React.ReactElement) =>
   render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
@@ -25,4 +26,17 @@ it('Button não dispara onPress quando disabled', () => {
 it('Badge mostra rótulo do status', () => {
   const {getByText} = wrap(<Badge status="confirmed" />);
   expect(getByText('Confirmado')).toBeTruthy();
+});
+
+it('ServiceCard mostra nome e preço formatado', () => {
+  const {getByText} = wrap(
+    <ServiceCard
+      icon="scissors"
+      name="Corte Clássico"
+      durationMinutes={30}
+      priceCents={4500}
+    />,
+  );
+  expect(getByText('Corte Clássico')).toBeTruthy();
+  expect(getByText('30min · R$ 45')).toBeTruthy();
 });
