@@ -5,6 +5,7 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {NavigationContainer} from '@react-navigation/native';
 import {ThemeProvider} from 'styled-components/native';
 import theme from '~/styles/theme';
+import {AuthProvider} from '~/contexts/AuthContext';
 import Routes from '~/routes';
 
 const App = () => (
@@ -12,7 +13,9 @@ const App = () => (
     <ThemeProvider theme={theme}>
       <StatusBar barStyle="light-content" backgroundColor={theme.colors.bg} />
       <NavigationContainer>
-        <Routes />
+        <AuthProvider>
+          <Routes />
+        </AuthProvider>
       </NavigationContainer>
     </ThemeProvider>
   </SafeAreaProvider>
