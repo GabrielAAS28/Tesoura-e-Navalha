@@ -13,7 +13,9 @@ export type IconName =
   | 'trash'
   | 'clock'
   | 'user'
-  | 'scissorsBrand';
+  | 'scissorsBrand'
+  | 'beard'
+  | 'combo';
 
 export type IconProps = {
   name: IconName;
@@ -118,6 +120,27 @@ function renderContent(name: IconName, fillValue: string) {
         <>
           <Circle cx="12" cy="8" r="4" fill={fillValue} />
           <Path d="M4 21c0-4 4-6 8-6s8 2 8 6" fill={fillValue} />
+        </>
+      );
+    case 'beard':
+      // Main.dc.html (ServiceCard "Barba") — paths copiados literalmente do
+      // mockup; a descrição do brief da Task 13 ("M12 2c3 4 6 7 6
+      // 11a6 6 0 01-12 0c0-4 3-7 6-11z") não bate com o SVG real do arquivo,
+      // então o arquivo (fonte primária) prevaleceu sobre o texto do brief.
+      return (
+        <>
+          <Path d="M4 15c1-6 4-11 8-11s7 5 8 11" fill={fillValue} />
+          <Path d="M4 15c0 3 3 6 8 6s8-3 8-6" fill={fillValue} />
+        </>
+      );
+    case 'combo':
+      // Main.dc.html / Servicos.dc.html (ServiceCard "Combo") — idem: o
+      // brief descrevia um Circle+Path, mas o SVG real em ambos os mockups é
+      // um Rect arredondado com um "+"; seguimos o arquivo.
+      return (
+        <>
+          <Rect x="4" y="4" width="16" height="16" rx="4" fill={fillValue} />
+          <Path d="M9 12h6M12 9v6" fill={fillValue} />
         </>
       );
     default:
