@@ -30,6 +30,8 @@ import {
   SectionBlock,
   SectionTitle,
   BarbersRow,
+  BarberCardWrapper,
+  BarberSubtitle,
   Footer,
   LoadingContainer,
   ErrorText,
@@ -226,15 +228,25 @@ export default function Servicos() {
             <SectionBlock>
               <SectionTitle>Escolha o barbeiro</SectionTitle>
               <BarbersRow>
-                {barbers.map(barber => (
-                  <BarberCard
-                    key={barber.id}
-                    initials={getInitials(barber.profile?.full_name)}
-                    name={barber.profile?.full_name ?? 'Barbeiro'}
-                    selected={selectedBarberId === barber.id}
-                    onPress={() => setSelectedBarberId(barber.id)}
-                  />
-                ))}
+                {barbers.map(barber => {
+                  const selected = selectedBarberId === barber.id;
+                  // Mockup mostra um subtítulo de papel/especialidade
+                  // ("Barbeiro sênior" etc.) que não existe como coluna —
+                  // usamos `bio` (texto livre) quando presente/não-vazio,
+                  // com fallback para o rótulo genérico "Barbeiro".
+                  const subtitle = barber.bio?.trim() || 'Barbeiro';
+                  return (
+                    <BarberCardWrapper key={barber.id} selected={selected}>
+                      <BarberCard
+                        initials={getInitials(barber.profile?.full_name)}
+                        name={barber.profile?.full_name ?? 'Barbeiro'}
+                        selected={selected}
+                        onPress={() => setSelectedBarberId(barber.id)}
+                      />
+                      <BarberSubtitle>{subtitle}</BarberSubtitle>
+                    </BarberCardWrapper>
+                  );
+                })}
               </BarbersRow>
             </SectionBlock>
           </Content>

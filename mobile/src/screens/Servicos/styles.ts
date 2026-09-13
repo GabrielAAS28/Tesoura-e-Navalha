@@ -144,6 +144,41 @@ export const BarbersRow = styled.ScrollView.attrs({
   showsHorizontalScrollIndicator: false,
 })``;
 
+// Wrapper tela-local para dar ao ~/components/BarberCard (compartilhado, NÃO
+// modificado — também usado por Main/index.tsx, Task 13, cujo mockup
+// (Main.dc.html) intencionalmente não tem borda/card) o tratamento visual de
+// cartão com borda que design/Servicos.dc.html (linhas 78-107) realmente
+// mostra: fundo #1E1E24, borda 1px #3F3F46 (não selecionado) ou 1.5px accent
+// + fundo levemente tintado (selecionado). Mesmo padrão selected/unselected
+// já usado em `Row` acima, para consistência dentro desta tela.
+export const BarberCardWrapper = styled.View<{selected: boolean}>`
+  width: 132px;
+  align-items: center;
+  gap: 10px;
+  border-radius: ${({theme}) => theme.radius.lg}px;
+  padding: 14px;
+  background-color: ${({selected, theme}) =>
+    selected ? hexToRgba(theme.colors.accent, 0.06) : theme.colors.surface};
+  border-width: ${({selected}) => (selected ? 1.5 : 1)}px;
+  border-color: ${({selected, theme}) => (selected ? theme.colors.accent : theme.colors.border)};
+`;
+
+// Subtitle de papel/especialidade (mockup: "Barbeiro sênior" / "Especialista
+// barba") — não existe coluna equivalente em `barbers`, só `bio` (texto
+// livre, opcional). Usa `barber.bio` quando presente/não-vazio; cai para o
+// rótulo genérico "Barbeiro" caso contrário (ver comentário de uso em
+// index.tsx). Renderizada FORA do BarberCard (que não tem prop de
+// subtítulo) mas dentro do wrapper, na mesma posição relativa do mockup
+// (logo abaixo do nome, já que omitimos a avaliação/rating por falta de
+// dado).
+export const BarberSubtitle = styled.Text`
+  font-family: ${({theme}) => theme.font.medium};
+  font-size: 11px;
+  font-weight: 500;
+  color: ${({theme}) => theme.colors.textSecondary};
+  text-align: center;
+`;
+
 export const Footer = styled.View`
   position: absolute;
   left: 0px;
