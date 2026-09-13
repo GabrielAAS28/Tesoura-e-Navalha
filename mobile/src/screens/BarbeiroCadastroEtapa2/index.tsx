@@ -149,6 +149,11 @@ export default function BarbeiroCadastroEtapa2() {
   const [pix, setPix] = useState('');
   const [termosAceitos, setTermosAceitos] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  // Guarda o tenant já criado numa tentativa anterior: se o profile/barber
+  // falhar depois do insert de tenants (ex.: conexão instável) e o usuário
+  // tocar "Finalizar Cadastro" de novo, reaproveita esse tenant em vez de
+  // criar um novo — evita acumular linhas de tenants órfãs a cada retry.
+  const [createdTenantId, setCreatedTenantId] = useState<string | null>(null);
 
   const handleFinalizar = async () => {
     if (!termosAceitos) {
@@ -184,24 +189,31 @@ export default function BarbeiroCadastroEtapa2() {
         return;
       }
 
-      // Não há campo "nome da barbearia" no mockup desta etapa — o nome do
-      // tenant é derivado do nome completo informado na Etapa1.
-      const tenantName = `Barbearia de ${nomeCompleto}`;
-      const slug = `${slugify(tenantName)}-${randomSuffix()}`;
+      // Se uma tentativa anterior já criou o tenant e falhou depois disso
+      // (profile ou barber), reaproveita o id em vez de inserir de novo.
+      let tenantId = createdTenantId;
+      if (!tenantId) {
+        // Não há campo "nome da barbearia" no mockup desta etapa — o nome
+        // do tenant é derivado do nome completo informado na Etapa1.
+        const tenantName = `Barbearia de ${nomeCompleto}`;
+        const slug = `${slugify(tenantName)}-${randomSuffix()}`;
 
-      const {data: tenant, error: tenantError} = await supabase
-        .from('tenants')
-        .insert({name: tenantName, slug})
-        .select()
-        .single();
-      if (tenantError || !tenant) {
-        Alert.alert('Erro', tenantError?.message ?? 'Não foi possível criar a barbearia.');
-        return;
+        const {data: tenant, error: tenantError} = await supabase
+          .from('tenants')
+          .insert({name: tenantName, slug})
+          .select()
+          .single();
+        if (tenantError || !tenant) {
+          Alert.alert('Erro', tenantError?.message ?? 'Não foi possível criar a barbearia.');
+          return;
+        }
+        tenantId = tenant.id;
+        setCreatedTenantId(tenant.id);
       }
 
       const {error: profileError} = await supabase.from('profiles').upsert({
         id: session.user.id,
-        tenant_id: tenant.id,
+        tenant_id: tenantId,
         role: 'admin',
         full_name: nomeCompleto,
         phone: telefone,
@@ -212,7 +224,7 @@ export default function BarbeiroCadastroEtapa2() {
       }
 
       const {error: barberError} = await supabase.from('barbers').insert({
-        tenant_id: tenant.id,
+        tenant_id: tenantId,
         profile_id: session.user.id,
         bio: bio || null,
       });
