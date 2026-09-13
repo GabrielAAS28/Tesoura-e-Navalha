@@ -229,8 +229,17 @@ export default function BarbeiroHorarios() {
   // Step 3 do dispatch: escolha de aplicar em lote atrás do botão "Salvar
   // Configurações", em vez de imediatamente a cada toque). Não existe
   // `updateWorkingHours` (Interfaces desta task só listam create/delete) —
-  // uma mudança de horário num dia já habilitado é implementada como
-  // delete da linha antiga + create da nova.
+  // uma mudança de horário num dia já habilitado é implementada como create
+  // da linha nova + delete da antiga.
+  //
+  // Ordem CREATE-antes-de-DELETE é proposital (fix de code review): se o
+  // `createWorkingHours` da nova faixa falhar (rede, validação etc.), a
+  // linha antiga em `deleteWorkingHours` nunca é chamada — o dia mantém seu
+  // expediente anterior em vez de ficar sem nenhuma linha (o que deixaria o
+  // barbeiro silenciosamente sem agenda disponível naquele dia até o próximo
+  // "Salvar" bem-sucedido). Pior caso de uma falha no meio do laço agora é
+  // uma linha antiga "sobrando" (duplicata inofensiva, seria substituída no
+  // próximo save), nunca um dia com zero linhas.
   const handleSalvarConfiguracoes = useCallback(async () => {
     if (!barber) return;
     setSaving(true);
@@ -243,16 +252,19 @@ export default function BarbeiroHorarios() {
         const timesChanged =
           before.enabled && after.enabled && (before.start !== after.start || before.end !== after.end);
 
-        if (before.enabled && before.existingId && (!after.enabled || timesChanged)) {
-          await deleteWorkingHours(before.existingId);
-        }
-        if (after.enabled && (!before.enabled || timesChanged)) {
+        const shouldCreate = after.enabled && (!before.enabled || timesChanged);
+        const shouldDelete = before.enabled && before.existingId && (!after.enabled || timesChanged);
+
+        if (shouldCreate) {
           await createWorkingHours({
             barber_id: barber.id,
             weekday,
             start_time: `${after.start}:00`,
             end_time: `${after.end}:00`,
           });
+        }
+        if (shouldDelete && before.existingId) {
+          await deleteWorkingHours(before.existingId);
         }
       }
 
