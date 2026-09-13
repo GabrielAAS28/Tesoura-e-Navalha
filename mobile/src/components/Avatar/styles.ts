@@ -1,11 +1,11 @@
 import styled from 'styled-components/native';
 import LinearGradient from 'react-native-linear-gradient';
 
-export const Gradient = styled(LinearGradient).attrs({
-  colors: ['#3F3F46', '#26262E'],
+export const Gradient = styled(LinearGradient).attrs(({theme}) => ({
+  colors: [theme.colors.border, theme.colors.surfaceAlt],
   start: {x: 0, y: 0},
   end: {x: 1, y: 1},
-})<{size: number; selected?: boolean}>`
+}))<{size: number; selected?: boolean}>`
   width: ${({size}) => size}px;
   height: ${({size}) => size}px;
   border-radius: ${({size}) => size / 2}px;
