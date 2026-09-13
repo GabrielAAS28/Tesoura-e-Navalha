@@ -5,7 +5,7 @@ Plataforma SaaS multi-tenant de agendamento para barbearias (Cliente + Barbeiro/
 ## Estrutura
 
 - `design/` — mockups visuais originais (Claude Design canvas, `.dc.html`)
-- `mobile/` — app React Native (Expo Router + NativeWind + Zustand + TanStack Query)
+- `mobile/` — app React Native (bare RN CLI + TypeScript + styled-components/native + @react-navigation + Supabase direto)
 - `supabase/migrations/` — schema Postgres (multi-tenant, RLS, anti-double-booking)
 - `supabase/functions/` — Edge Functions (`create_appointment`)
 
@@ -23,9 +23,10 @@ Plataforma SaaS multi-tenant de agendamento para barbearias (Cliente + Barbeiro/
 5. No app mobile:
    ```
    cd mobile
-   cp .env.example .env   # preencha EXPO_PUBLIC_SUPABASE_URL e EXPO_PUBLIC_SUPABASE_ANON_KEY
+   cp .env.example .env   # preencha SUPABASE_URL, SUPABASE_ANON_KEY e GOOGLE_WEB_CLIENT_ID
    npm install
-   npm start
+   npx react-native-asset   # linka as fontes Plus Jakarta Sans
+   npm run android          # ou: npm run ios
    ```
 
 ## Fluxos implementados (MVP)
@@ -35,4 +36,4 @@ Plataforma SaaS multi-tenant de agendamento para barbearias (Cliente + Barbeiro/
 
 Fora de escopo neste MVP: cobrança de assinatura via Stripe/Pagar.me (piloto cobra manual/PIX), pagamento do cliente dentro do checkout, painel web de admin.
 
-Ver `mobile/app/` para as rotas (`(auth)`, `(client)`, `(barber)`) e `mobile/lib/` para os helpers de dados/auth.
+Ver `mobile/src/routes/` para a navegação (auth, client, barber), `mobile/src/services/` para os helpers de dados/auth e `mobile/src/screens/` para as telas.
