@@ -1,19 +1,31 @@
 import React from 'react';
-import styled from 'styled-components/native';
-
-const Container = styled.View`
-  flex: 1;
-  background-color: ${({theme}) => theme.colors.bg};
-`;
-
-const Label = styled.Text`
-  color: ${({theme}) => theme.colors.textPrimary};
-`;
+import {ActivityIndicator} from 'react-native';
+import {useTheme} from 'styled-components/native';
+import Icon from '~/components/Icon';
+import {
+  Container,
+  LogoTile,
+  TextBlock,
+  Title,
+  Tagline,
+  IndicatorWrapper,
+} from './styles';
 
 export default function Splash() {
+  const theme = useTheme();
+
   return (
     <Container>
-      <Label>Splash</Label>
+      <LogoTile>
+        <Icon name="scissors" size={40} color={theme.colors.accent} strokeWidth={1.6} />
+      </LogoTile>
+      <TextBlock>
+        <Title>Barbearia do Bairro</Title>
+        <Tagline>Seu estilo, seu tempo.</Tagline>
+      </TextBlock>
+      <IndicatorWrapper>
+        <ActivityIndicator color={theme.colors.accent} />
+      </IndicatorWrapper>
     </Container>
   );
 }
