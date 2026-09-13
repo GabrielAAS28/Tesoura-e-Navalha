@@ -1,14 +1,21 @@
 import React from 'react';
 import {BottomTabBarProps} from '@react-navigation/bottom-tabs';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import styled, {useTheme} from 'styled-components/native';
 import Icon, {IconName} from '~/components/Icon';
 
-const Container = styled.View`
+// `insetBottom` soma o inset seguro real do device (home indicator no iOS,
+// gesture nav no Android) ao padding/altura fixos do mockup — necessário
+// porque o Android SDK 36 (ver Task 0) torna edge-to-edge obrigatório, então
+// sem isso a tab bar fica parcialmente sob a barra de navegação do sistema
+// em qualquer device com inset > 0. Em um device sem inset (insetBottom=0)
+// o resultado é idêntico ao valor fixo anterior.
+const Container = styled.View<{insetBottom: number}>`
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
-  height: 84px;
-  padding-bottom: 16px;
+  height: ${({insetBottom}) => 84 + insetBottom}px;
+  padding-bottom: ${({insetBottom}) => 16 + insetBottom}px;
   background-color: ${({theme}) => theme.colors.surface};
   border-top-width: 1px;
   border-top-color: ${({theme}) => theme.colors.border};
@@ -45,9 +52,10 @@ const ROUTE_META: Record<string, {icon: IconName; label: string}> = {
 
 export default function BottomTabBar({state, descriptors, navigation}: BottomTabBarProps) {
   const theme = useTheme();
+  const insets = useSafeAreaInsets();
 
   return (
-    <Container>
+    <Container insetBottom={insets.bottom}>
       {state.routes.map((route, index) => {
         const {options} = descriptors[route.key];
         const meta = ROUTE_META[route.name];

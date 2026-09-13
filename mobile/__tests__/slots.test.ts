@@ -71,4 +71,27 @@ describe('computeFreeSlots', () => {
     });
     expect(slots).toEqual([]);
   });
+
+  it('remove horários já passados quando a data é hoje, mas mantém os futuros', () => {
+    // "Agora" fixado em hoje às 09:20 — dentro da janela de trabalho
+    // 09:00-10:00 usada abaixo, então parte dos candidatos (09:00, 09:15) já
+    // ficou no passado e parte (09:30) ainda está por vir.
+    const now = new Date();
+    now.setHours(9, 20, 0, 0);
+    jest.useFakeTimers().setSystemTime(now);
+    try {
+      const today = new Date(now);
+      const slots = computeFreeSlots({
+        date: today,
+        durationMinutes: 30,
+        workingHours: [wh(today.getDay(), '09:00', '10:00')],
+        appointments: [],
+      });
+      // 09:00 e 09:15 já passaram (agora são 09:20) e são excluídos; só
+      // 09:30 (termina 10:00, ainda cabe na janela) permanece.
+      expect(slots.map(s => s.getHours() * 60 + s.getMinutes())).toEqual([570]);
+    } finally {
+      jest.useRealTimers();
+    }
+  });
 });

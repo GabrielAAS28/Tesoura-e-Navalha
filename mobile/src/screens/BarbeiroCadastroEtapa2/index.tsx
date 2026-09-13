@@ -129,7 +129,7 @@ export default function BarbeiroCadastroEtapa2() {
   const theme = useTheme();
   const navigation = useNavigation();
   const route = useRoute();
-  const {refreshProfile} = useAuth();
+  const {refreshProfile, setBarberOnboarding} = useAuth();
 
   const params = (route.params ?? {}) as Partial<BarbeiroCadastroEtapa2Params>;
   const nomeCompleto = params.nomeCompleto ?? '';
@@ -236,6 +236,12 @@ export default function BarbeiroCadastroEtapa2() {
       // routes/index.tsx troca para BarberRoutes automaticamente assim que
       // profile.role vira 'admin' — só precisamos forçar o reload aqui.
       await refreshProfile();
+      // Só agora é seguro derrubar o "modo onboarding" que mantinha
+      // AuthRoutes montado apesar de signed=true (ver BarbeiroCadastro/
+      // index.tsx e routes/index.tsx) — profile.role já é 'admin' neste
+      // ponto, então routes/index.tsx roteia para BarberRoutes em vez de
+      // cair de volta em ClientRoutes.
+      setBarberOnboarding(false);
     } catch (error) {
       Alert.alert('Erro', error instanceof Error ? error.message : String(error));
     } finally {

@@ -18,6 +18,16 @@ export function computeFreeSlots(params: {
   const hours = workingHours.filter(wh => wh.weekday === weekday);
   if (hours.length === 0) return [];
 
+  // Só filtra horários já passados quando `date` é o dia de hoje — uma data
+  // futura deve oferecer a janela de trabalho completa normalmente. Nada
+  // depois disso (nem o client, nem a Edge Function create_appointment)
+  // rejeita um starts_at no passado, então esse filtro é a única barreira.
+  const now = new Date();
+  const isToday =
+    date.getFullYear() === now.getFullYear() &&
+    date.getMonth() === now.getMonth() &&
+    date.getDate() === now.getDate();
+
   const slots: Date[] = [];
 
   for (const wh of hours) {
@@ -34,6 +44,8 @@ export function computeFreeSlots(params: {
       candidate.getTime() + durationMinutes * 60_000 <= windowEnd.getTime();
       candidate = new Date(candidate.getTime() + stepMinutes * 60_000)
     ) {
+      if (isToday && candidate.getTime() <= now.getTime()) continue;
+
       const candidateEnd = new Date(candidate.getTime() + durationMinutes * 60_000);
 
       const overlaps = appointments.some(appt => {

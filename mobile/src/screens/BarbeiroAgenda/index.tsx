@@ -1,6 +1,7 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {ActivityIndicator, Alert} from 'react-native';
 import {useTheme} from 'styled-components/native';
+import {useFocusEffect} from '@react-navigation/native';
 import Svg, {Path} from 'react-native-svg';
 import {format} from 'date-fns';
 import {ptBR} from 'date-fns/locale';
@@ -167,9 +168,14 @@ export default function BarbeiroAgenda() {
     }
   }, [profile?.id, profile?.tenant_id]);
 
-  useEffect(() => {
-    loadAgenda();
-  }, [loadAgenda]);
+  // useFocusEffect em vez de useEffect de montagem — a tela fica montada
+  // entre trocas de aba (Tab.Navigator), então precisamos refazer o fetch a
+  // cada vez que ela ganha foco (ver "FINAL WHOLE-BRANCH REVIEW" item 2).
+  useFocusEffect(
+    useCallback(() => {
+      loadAgenda();
+    }, [loadAgenda]),
+  );
 
   // Estatísticas derivadas localmente da mesma lista já buscada — ver
   // "Controller ruling" #6 do dispatch desta task: soma/contagem excluem

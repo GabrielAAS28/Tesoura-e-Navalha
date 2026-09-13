@@ -11,6 +11,17 @@ type AuthValue = {
   role: UserRole | undefined;
   signed: boolean;
   loading: boolean;
+  // true enquanto uma resolução de profile está em voo para a sessão atual
+  // (ver o subscriber de onAuthStateChange abaixo) — routes/index.tsx trata
+  // isso como "ainda carregando" para não decidir ClientRoutes/BarberRoutes
+  // com um `role` momentaneamente stale/null.
+  profileLoading: boolean;
+  // true enquanto o fluxo de cadastro de barbeiro (BarbeiroCadastro ->
+  // BarbeiroCadastroEtapa2) está em andamento — permite manter o usuário no
+  // AuthRoutes mesmo depois que verifyPhoneOtp já deixou `signed` true (ver
+  // BarbeiroCadastro/index.tsx e BarbeiroCadastroEtapa2/index.tsx).
+  barberOnboarding: boolean;
+  setBarberOnboarding: (value: boolean) => void;
   refreshProfile: () => Promise<void>;
   signOut: () => Promise<void>;
 };
@@ -21,6 +32,8 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [barberOnboarding, setBarberOnboarding] = useState(false);
 
   const loadProfile = useCallback(async (userId?: string) => {
     if (!userId) return setProfile(null);
@@ -35,7 +48,14 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     });
     const {data: sub} = supabase.auth.onAuthStateChange(async (_e, s) => {
       setSession(s);
-      await loadProfile(s?.user.id);
+      if (!s) {
+        setProfile(null);
+        setProfileLoading(false);
+        return;
+      }
+      setProfileLoading(true);
+      await loadProfile(s.user.id);
+      setProfileLoading(false);
     });
     return () => sub.subscription.unsubscribe();
   }, [loadProfile]);
@@ -46,6 +66,9 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     role: profile?.role,
     signed: !!session,
     loading,
+    profileLoading,
+    barberOnboarding,
+    setBarberOnboarding,
     refreshProfile: () => loadProfile(session?.user.id),
     signOut: async () => {
       await authSignOut();

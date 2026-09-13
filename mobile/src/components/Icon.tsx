@@ -1,5 +1,6 @@
 import React from 'react';
 import Svg, {Path, Circle, Rect} from 'react-native-svg';
+import {useTheme} from 'styled-components/native';
 
 export type IconName =
   | 'scissors'
@@ -25,7 +26,6 @@ export type IconProps = {
 };
 
 const DEFAULT_SIZE = 24;
-const DEFAULT_COLOR = '#F4F4F5';
 const DEFAULT_STROKE_WIDTH = 1.8;
 
 // NOTA: react-native-svg dá a Circle/Path/Rect um `fill` padrão próprio
@@ -151,11 +151,19 @@ function renderContent(name: IconName, fillValue: string) {
 export default function Icon({
   name,
   size = DEFAULT_SIZE,
-  color = DEFAULT_COLOR,
+  color,
   strokeWidth = DEFAULT_STROKE_WIDTH,
 }: IconProps) {
+  // Icon não é um styled-component (não recebe `theme` via template
+  // literal), então o default de `color` precisa vir de useTheme() em vez de
+  // um valor default de parâmetro — hooks não podem ser referenciados numa
+  // default expression, por isso o cálculo é feito aqui dentro do corpo da
+  // função. Era '#F4F4F5' hardcoded, que duplicava theme.colors.textPrimary
+  // exatamente (ver src/styles/theme.ts).
+  const theme = useTheme();
+  const effectiveColor = color ?? theme.colors.textPrimary;
   const isFilled = name === 'star';
-  const fillValue = isFilled ? color : 'none';
+  const fillValue = isFilled ? effectiveColor : 'none';
 
   return (
     <Svg
@@ -163,7 +171,7 @@ export default function Icon({
       height={size}
       viewBox="0 0 24 24"
       fill={fillValue}
-      stroke={isFilled ? 'none' : color}
+      stroke={isFilled ? 'none' : effectiveColor}
       strokeWidth={isFilled ? undefined : strokeWidth}
       strokeLinecap={isFilled ? undefined : 'round'}
       strokeLinejoin={isFilled ? undefined : 'round'}>

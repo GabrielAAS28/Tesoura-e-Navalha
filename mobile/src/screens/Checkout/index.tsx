@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {ActivityIndicator, Alert} from 'react-native';
 import {useTheme} from 'styled-components/native';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {StackActions, useNavigation, useRoute} from '@react-navigation/native';
 import Svg, {Circle, Path, Rect} from 'react-native-svg';
 import {format} from 'date-fns';
 import {ptBR} from 'date-fns/locale';
@@ -233,9 +233,17 @@ export default function Checkout() {
       });
       // Sucesso não é uma mudança de estado de autenticação, então
       // AuthContext não navega sozinho aqui — é preciso um navigate manual.
-      // 'Agendamentos' não é uma tela deste HomeStack local: o React
-      // Navigation resolve subindo até o tab navigator pai.
-      navigation.navigate('Agendamentos' as never);
+      // 'Agendamentos' não é uma tela deste HomeStack local: navegamos pelo
+      // navigator pai (o Tab.Navigator) explicitamente via getParent() em vez
+      // de deixar o React Navigation subir sozinho, porque também precisamos
+      // resetar o HomeStack local (abaixo) — se resolvêssemos via
+      // navigation.navigate direto, o HomeStack ficaria com
+      // Servicos/Agendamento/Checkout empilhados por baixo. Troca de aba
+      // primeiro, popToTop depois: assim o reset do HomeStack acontece com a
+      // aba "Início" já fora de foco, sem um frame visível voltando para
+      // Main antes de trocar de aba.
+      navigation.getParent()?.navigate('Agendamentos' as never);
+      navigation.dispatch(StackActions.popToTop());
     } catch (err) {
       // Erro de conflito (double-booking) retornado pela Edge Function, ou
       // qualquer outro erro — mostra Alert e permanece na tela, sem retry

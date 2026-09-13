@@ -1,6 +1,7 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {ActivityIndicator, Alert} from 'react-native';
 import {useTheme} from 'styled-components/native';
+import {useFocusEffect} from '@react-navigation/native';
 import {format} from 'date-fns';
 import {ptBR} from 'date-fns/locale';
 import Avatar from '~/components/Avatar';
@@ -75,41 +76,48 @@ export default function Agendamentos() {
   // botão daquele card enquanto a chamada está em voo).
   const [cancellingId, setCancellingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    let cancelled = false;
+  // useFocusEffect (não um useEffect de montagem) — Tab.Navigator mantém a
+  // tela viva entre trocas de aba, então um mount-only effect não refaz o
+  // fetch quando Checkout navega de volta para cá após criar um agendamento
+  // novo (ver "FINAL WHOLE-BRANCH REVIEW" item 2). Refaz o fetch toda vez que
+  // a tela ganha foco, inclusive na primeira montagem.
+  useFocusEffect(
+    useCallback(() => {
+      let cancelled = false;
 
-    async function load() {
-      const clientId = session?.user.id;
-      if (!clientId) {
-        if (!cancelled) {
-          setError('Sessão inválida.');
-          setLoading(false);
+      async function load() {
+        const clientId = session?.user.id;
+        if (!clientId) {
+          if (!cancelled) {
+            setError('Sessão inválida.');
+            setLoading(false);
+          }
+          return;
         }
-        return;
-      }
-      setLoading(true);
-      setError(null);
-      try {
-        // Única chamada em fetchClientAppointments por montagem — a divisão
-        // Próximos/Histórico é derivada localmente (useMemo abaixo) a partir
-        // desta mesma lista, sem novo fetch ao trocar de aba (ver "Controller
-        // ruling" #4 do dispatch desta task).
-        const data = await fetchClientAppointments(clientId);
-        if (!cancelled) setAppointments(data);
-      } catch (err) {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : String(err));
+        setLoading(true);
+        setError(null);
+        try {
+          // Única chamada em fetchClientAppointments por foco — a divisão
+          // Próximos/Histórico é derivada localmente (useMemo abaixo) a partir
+          // desta mesma lista, sem novo fetch ao trocar de aba (ver "Controller
+          // ruling" #4 do dispatch desta task).
+          const data = await fetchClientAppointments(clientId);
+          if (!cancelled) setAppointments(data);
+        } catch (err) {
+          if (!cancelled) {
+            setError(err instanceof Error ? err.message : String(err));
+          }
+        } finally {
+          if (!cancelled) setLoading(false);
         }
-      } finally {
-        if (!cancelled) setLoading(false);
       }
-    }
 
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, [session]);
+      load();
+      return () => {
+        cancelled = true;
+      };
+    }, [session]),
+  );
 
   // Próximos = starts_at no futuro E status !== 'cancelled'; Histórico =
   // tudo o mais (passado OU qualquer cancelado, independente da data) — ver

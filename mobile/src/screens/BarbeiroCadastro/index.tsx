@@ -7,6 +7,7 @@ import Icon from '~/components/Icon';
 import Button from '~/components/Button';
 import TextField from '~/components/TextField';
 import {sendPhoneOtp, verifyPhoneOtp} from '~/services/authService';
+import {useAuth} from '~/contexts/AuthContext';
 import type {BarbeiroCadastroEtapa2Params} from '~/screens/BarbeiroCadastroEtapa2';
 import {
   Screen,
@@ -96,6 +97,7 @@ const EXPERIENCIAS: {key: string; label: string}[] = [
 export default function BarbeiroCadastro() {
   const theme = useTheme();
   const navigation = useNavigation();
+  const {setBarberOnboarding} = useAuth();
 
   // Nome/telefone/bio são os únicos campos desta etapa efetivamente
   // persistidos (via Etapa2). E-mail, CPF, especialidades e anos de
@@ -149,6 +151,14 @@ export default function BarbeiroCadastro() {
     setVerificandoOtp(true);
     try {
       await verifyPhoneOtp(buildPhone(), codigo.trim());
+      // verifyPhoneOtp já criou uma sessão real do Supabase — a partir daqui
+      // AuthContext.signed vira true. Sem barberOnboarding=true,
+      // routes/index.tsx desmontaria AuthRoutes (que hospeda Etapa2) em
+      // favor de ClientRoutes antes do navigate abaixo rodar, já que o
+      // trigger do banco cria o profile com role='client' por padrão. Isso
+      // precisa vir antes do navigate para garantir que AuthRoutes ainda
+      // esteja montado quando a navegação for despachada.
+      setBarberOnboarding(true);
       const params: BarbeiroCadastroEtapa2Params = {
         nomeCompleto: nomeCompleto.trim(),
         telefone: buildPhone(),
