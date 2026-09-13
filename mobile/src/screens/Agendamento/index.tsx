@@ -6,13 +6,11 @@ import Svg, {Path} from 'react-native-svg';
 import {addDays, endOfDay, format, isSameDay, startOfDay} from 'date-fns';
 import {ptBR} from 'date-fns/locale';
 import Icon from '~/components/Icon';
-import BarberCard from '~/components/BarberCard';
-import {fetchTenantBarbers} from '~/services/tenantService';
 import {fetchTenantServices} from '~/services/servicoService';
 import {fetchBarberWorkingHours} from '~/services/horarioService';
 import {fetchBarberAppointments} from '~/services/agendamentoService';
 import {computeFreeSlots} from '~/services/slots';
-import type {AppointmentWithDetails, BarberWithProfile, Service, WorkingHours} from '~/types';
+import type {AppointmentWithDetails, Service, WorkingHours} from '~/types';
 import type {CheckoutParams} from '~/screens/Checkout';
 import {
   Screen,
@@ -25,7 +23,6 @@ import {
   SectionTitle,
   MonthLabel,
   PeriodHeaderRow,
-  BarbersRow,
   DatesRow,
   DateChip,
   DateWeekday,
@@ -39,11 +36,12 @@ import {
   ErrorText,
 } from './styles';
 
-// Parâmetros recebidos de Servicos: {serviceId, tenantId} — tenantId foi
-// adicionado ao contrato do brief original (ver "Controller ruling" do
-// dispatch desta task) porque esta tela precisa dele para buscar barbeiros
-// e resolver os detalhes do serviço (não existe fetchServiceById).
-export type AgendamentoParams = {serviceId: string; tenantId: string};
+// Parâmetros recebidos de Servicos: {serviceId, barberId, tenantId} — o
+// barbeiro já vem escolhido de Servicos (design/Servicos.dc.html tem a
+// seleção de barbeiro nela, não aqui — ver design/Agendamento.dc.html, que
+// só mostra data/horário). tenantId é necessário porque não existe
+// `fetchServiceById` (resolvemos o serviço via fetchTenantServices).
+export type AgendamentoParams = {serviceId: string; barberId: string; tenantId: string};
 
 // Path do chevron-left copiado de design/Agendamento.dc.html (linha 21) —
 // mesma solução já usada em BarbeiroCadastro/index.tsx e Servicos/index.tsx.
@@ -63,17 +61,6 @@ function ChevronLeftIcon({color}: {color: string}) {
   );
 }
 
-// Duplicado de Main/index.tsx (Task 13) — não há helper equivalente em
-// ~/utils hoje. Deriva iniciais (até 2 letras) do nome completo.
-function getInitials(fullName: string | null | undefined): string {
-  const trimmed = (fullName ?? '').trim();
-  if (!trimmed) return '?';
-  const parts = trimmed.split(/\s+/);
-  const first = parts[0]?.[0] ?? '';
-  const last = parts.length > 1 ? parts[parts.length - 1]?.[0] ?? '' : '';
-  return (first + last).toUpperCase();
-}
-
 const WEEKDAY_LABELS = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
 const DAYS_AHEAD = 14;
 
@@ -89,14 +76,12 @@ export default function Agendamento() {
   // BarbeiroCadastroEtapa2/index.tsx — para não crashar se a tela for aberta
   // sem os parâmetros esperados.
   const params = (route.params ?? {}) as Partial<AgendamentoParams>;
-  const {serviceId, tenantId} = params;
+  const {serviceId, barberId, tenantId} = params;
 
-  const [barbers, setBarbers] = useState<BarberWithProfile[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [loadingInitial, setLoadingInitial] = useState(true);
   const [initialError, setInitialError] = useState<string | null>(null);
 
-  const [selectedBarberId, setSelectedBarberId] = useState<string | null>(null);
   const dates = useMemo(() => {
     const today = startOfDay(new Date());
     return Array.from({length: DAYS_AHEAD}, (_, i) => addDays(today, i));
@@ -108,14 +93,14 @@ export default function Agendamento() {
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [slotsError, setSlotsError] = useState<string | null>(null);
 
-  // Busca barbeiros e serviços do tenant em paralelo — o serviço é
-  // necessário aqui (não só em Checkout) porque `computeFreeSlots` precisa
-  // de `duration_minutes + buffer_minutes`, e não existe `fetchServiceById`.
+  // Busca os serviços do tenant — necessário aqui (não só em Checkout)
+  // porque `computeFreeSlots` precisa de `duration_minutes +
+  // buffer_minutes`, e não existe `fetchServiceById`.
   useEffect(() => {
     let cancelled = false;
 
     async function load() {
-      if (!tenantId || !serviceId) {
+      if (!tenantId || !serviceId || !barberId) {
         if (!cancelled) {
           setInitialError('Parâmetros de navegação inválidos.');
           setLoadingInitial(false);
@@ -125,12 +110,8 @@ export default function Agendamento() {
       setLoadingInitial(true);
       setInitialError(null);
       try {
-        const [barbersData, servicesData] = await Promise.all([
-          fetchTenantBarbers(tenantId),
-          fetchTenantServices(tenantId),
-        ]);
+        const servicesData = await fetchTenantServices(tenantId);
         if (!cancelled) {
-          setBarbers(barbersData);
           setServices(servicesData);
         }
       } catch (err) {
@@ -146,19 +127,20 @@ export default function Agendamento() {
     return () => {
       cancelled = true;
     };
-  }, [tenantId, serviceId]);
+  }, [tenantId, serviceId, barberId]);
 
   const service = useMemo(
     () => services.find(s => s.id === serviceId) ?? null,
     [services, serviceId],
   );
 
-  // Ao trocar de barbeiro ou de data, busca horários de trabalho e
-  // agendamentos existentes do barbeiro para o dia selecionado — entradas de
-  // `computeFreeSlots` (preview de conflito; a fonte real de verdade contra
-  // double-booking é a Edge Function chamada em Checkout).
+  // O barbeiro já chega escolhido (de Servicos) — busca horários de
+  // trabalho e agendamentos existentes desse barbeiro sempre que a data
+  // selecionada muda. Entradas de `computeFreeSlots` (preview de conflito; a
+  // fonte real de verdade contra double-booking é a Edge Function chamada em
+  // Checkout).
   useEffect(() => {
-    if (!selectedBarberId) {
+    if (!barberId) {
       setWorkingHours([]);
       setAppointments([]);
       return;
@@ -173,8 +155,8 @@ export default function Agendamento() {
         const dayStartISO = startOfDay(selectedDate).toISOString();
         const dayEndISO = endOfDay(selectedDate).toISOString();
         const [hoursData, appointmentsData] = await Promise.all([
-          fetchBarberWorkingHours(selectedBarberId as string),
-          fetchBarberAppointments(selectedBarberId as string, dayStartISO, dayEndISO),
+          fetchBarberWorkingHours(barberId as string),
+          fetchBarberAppointments(barberId as string, dayStartISO, dayEndISO),
         ]);
         if (!cancelled) {
           setWorkingHours(hoursData);
@@ -193,17 +175,17 @@ export default function Agendamento() {
     return () => {
       cancelled = true;
     };
-  }, [selectedBarberId, selectedDate]);
+  }, [barberId, selectedDate]);
 
   const freeSlots = useMemo(() => {
-    if (!service || !selectedBarberId) return [];
+    if (!service || !barberId) return [];
     return computeFreeSlots({
       date: selectedDate,
       durationMinutes: service.duration_minutes + service.buffer_minutes,
       workingHours,
       appointments,
     });
-  }, [service, selectedBarberId, selectedDate, workingHours, appointments]);
+  }, [service, barberId, selectedDate, workingHours, appointments]);
 
   const morningSlots = useMemo(() => freeSlots.filter(slot => slot.getHours() < 12), [freeSlots]);
   const afternoonSlots = useMemo(
@@ -215,16 +197,16 @@ export default function Agendamento() {
 
   const goToCheckout = useCallback(
     (slot: Date) => {
-      if (!selectedBarberId || !serviceId || !tenantId) return;
+      if (!barberId || !serviceId || !tenantId) return;
       const checkoutParams: CheckoutParams = {
         serviceId,
-        barberId: selectedBarberId,
+        barberId,
         startsAtISO: slot.toISOString(),
         tenantId,
       };
       navigation.navigate('Checkout' as never, checkoutParams as never);
     },
-    [navigation, selectedBarberId, serviceId, tenantId],
+    [navigation, barberId, serviceId, tenantId],
   );
 
   const monthLabel = capitalize(format(selectedDate, 'MMMM yyyy', {locale: ptBR}));
@@ -267,26 +249,6 @@ export default function Agendamento() {
       <Scroller>
         <Content>
           <SectionBlock>
-            {/* Seletor de barbeiro — na versão original do design
-                (design/Servicos.dc.html) essa seção vivia na tela de
-                Serviços; o controller ruling desta task moveu a escolha do
-                barbeiro para cá, já que Agendamento é quem precisa do
-                barberId para buscar horários. */}
-            <SectionTitle>Escolha o barbeiro</SectionTitle>
-            <BarbersRow>
-              {barbers.map(barber => (
-                <BarberCard
-                  key={barber.id}
-                  initials={getInitials(barber.profile?.full_name)}
-                  name={barber.profile?.full_name ?? 'Barbeiro'}
-                  selected={selectedBarberId === barber.id}
-                  onPress={() => setSelectedBarberId(barber.id)}
-                />
-              ))}
-            </BarbersRow>
-          </SectionBlock>
-
-          <SectionBlock>
             <MonthLabel>{monthLabel}</MonthLabel>
             <DatesRow>
               {dates.map(date => {
@@ -305,9 +267,7 @@ export default function Agendamento() {
             </DatesRow>
           </SectionBlock>
 
-          {!selectedBarberId ? (
-            <EmptyStateText>Selecione um barbeiro para ver os horários disponíveis.</EmptyStateText>
-          ) : loadingSlots ? (
+          {loadingSlots ? (
             <LoadingContainer>
               <ActivityIndicator color={theme.colors.accent} />
             </LoadingContainer>

@@ -70,12 +70,6 @@ export const PeriodHeaderRow = styled.View`
   gap: 8px;
 `;
 
-export const BarbersRow = styled.ScrollView.attrs({
-  horizontal: true,
-  contentContainerStyle: {gap: 12, paddingBottom: 4},
-  showsHorizontalScrollIndicator: false,
-})``;
-
 export const DatesRow = styled.ScrollView.attrs({
   horizontal: true,
   contentContainerStyle: {gap: 10, paddingBottom: 4},
