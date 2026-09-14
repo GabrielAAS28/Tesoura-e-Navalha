@@ -1,9 +1,13 @@
-module.exports = function (api) {
-  api.cache(true);
-  return {
-    presets: [
-      ["babel-preset-expo", { jsxImportSource: "nativewind" }],
-      "nativewind/babel",
+module.exports = {
+  presets: ['module:@react-native/babel-preset'],
+  plugins: [
+    [
+      'module-resolver',
+      {
+        root: ['./src'],
+        extensions: ['.ios.tsx', '.android.tsx', '.tsx', '.ts', '.js', '.json'],
+        alias: {'~': './src'},
+      },
     ],
-  };
+  ],
 };
