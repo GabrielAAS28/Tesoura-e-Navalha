@@ -149,16 +149,21 @@ export default function BarbeiroCadastro() {
     }
 
     setVerificandoOtp(true);
+    // Precisa ser setado ANTES de verifyPhoneOtp, não depois: o cliente
+    // @supabase/auth-js internamente AGUARDA cada subscriber de
+    // onAuthStateChange (incluindo o do AuthContext, que por sua vez aguarda
+    // um loadProfile assíncrono) antes de verifyPhoneOtp em si resolver. Ou
+    // seja, o React já commitou pelo menos um frame com signed=true e
+    // barberOnboarding=false ANTES do `await` abaixo retornar — se
+    // setBarberOnboarding(true) só rodasse depois do await, routes/index.tsx
+    // já teria desmontado AuthRoutes (que hospeda esta tela) nesse meio
+    // tempo, e o navigate() subsequente miraria uma stack já desmontada
+    // (falha silenciosa) com barberOnboarding travado em true para sempre.
+    // Setar antes garante que AuthRoutes já está sendo mantido montado pelo
+    // guard de barberOnboarding quando o subscriber do AuthContext rodar.
+    setBarberOnboarding(true);
     try {
       await verifyPhoneOtp(buildPhone(), codigo.trim());
-      // verifyPhoneOtp já criou uma sessão real do Supabase — a partir daqui
-      // AuthContext.signed vira true. Sem barberOnboarding=true,
-      // routes/index.tsx desmontaria AuthRoutes (que hospeda Etapa2) em
-      // favor de ClientRoutes antes do navigate abaixo rodar, já que o
-      // trigger do banco cria o profile com role='client' por padrão. Isso
-      // precisa vir antes do navigate para garantir que AuthRoutes ainda
-      // esteja montado quando a navegação for despachada.
-      setBarberOnboarding(true);
       const params: BarbeiroCadastroEtapa2Params = {
         nomeCompleto: nomeCompleto.trim(),
         telefone: buildPhone(),
@@ -166,6 +171,11 @@ export default function BarbeiroCadastro() {
       };
       navigation.navigate('BarbeiroCadastroEtapa2' as never, params as never);
     } catch (error) {
+      // Verificação falhou (código inválido, rede etc.) — nenhuma sessão real
+      // foi criada, então não há onboarding de barbeiro em andamento. Limpa a
+      // flag para não deixá-la travada em true para um usuário que nunca
+      // chegou a autenticar.
+      setBarberOnboarding(false);
       Alert.alert('Erro', error instanceof Error ? error.message : String(error));
     } finally {
       setVerificandoOtp(false);

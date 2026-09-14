@@ -131,6 +131,17 @@ export default function BarbeiroCadastroEtapa2() {
   const route = useRoute();
   const {refreshProfile, setBarberOnboarding} = useAuth();
 
+  // Abandonar a Etapa2 pelo botão de voltar sem concluir o cadastro não pode
+  // deixar barberOnboarding travado em true: como a sessão do Supabase já
+  // existe (criada pela verificação de OTP da Etapa1) mas o profile nunca
+  // foi promovido a admin, permanecer com a flag true prenderia o usuário
+  // indefinidamente em AuthRoutes (ver routes/index.tsx) mesmo após sair e
+  // tentar logar de novo.
+  const handleVoltar = () => {
+    setBarberOnboarding(false);
+    navigation.goBack();
+  };
+
   const params = (route.params ?? {}) as Partial<BarbeiroCadastroEtapa2Params>;
   const nomeCompleto = params.nomeCompleto ?? '';
   const telefone = params.telefone ?? '';
@@ -254,7 +265,7 @@ export default function BarbeiroCadastroEtapa2() {
       <Scroller>
         <HeaderRow>
           <HeaderLeft>
-            <BackButton onPress={() => navigation.goBack()} activeOpacity={0.8}>
+            <BackButton onPress={handleVoltar} activeOpacity={0.8}>
               <ChevronLeftIcon color={theme.colors.textPrimary} />
             </BackButton>
             <HeaderTitle>Cadastro de Profissional</HeaderTitle>

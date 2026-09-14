@@ -46,11 +46,28 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
       await loadProfile(data.session?.user.id);
       setLoading(false);
     });
-    const {data: sub} = supabase.auth.onAuthStateChange(async (_e, s) => {
+    const {data: sub} = supabase.auth.onAuthStateChange(async (event, s) => {
       setSession(s);
       if (!s) {
         setProfile(null);
         setProfileLoading(false);
+        return;
+      }
+      // Só o evento SIGNED_IN representa uma troca real de identidade — é o
+      // único caso em que routes/index.tsx precisa segurar o roteamento em
+      // Splash até o profile (e portanto o `role`) recarregar. Eventos como
+      // TOKEN_REFRESHED (disparado ~a cada hora pelo autoRefreshToken do
+      // supabase-js), INITIAL_SESSION e USER_UPDATED mantêm o mesmo usuário
+      // logado — gatear profileLoading nesses casos também fazia
+      // routes/index.tsx desmontar a árvore de navegação ativa
+      // (ClientRoutes/BarberRoutes inteiras, com qualquer tela aninhada, ex.:
+      // Checkout em andamento) para mostrar Splash e remontar do zero a cada
+      // refresh de token, sem necessidade — o profile não mudou.
+      if (event !== 'SIGNED_IN') {
+        // Ainda recarrega o profile em segundo plano (sem gatear o router)
+        // para manter dados como `role` atualizados caso tenham mudado no
+        // servidor, mas sem forçar Splash/remount por isso.
+        loadProfile(s.user.id);
         return;
       }
       setProfileLoading(true);
@@ -74,6 +91,11 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
       await authSignOut();
       setSession(null);
       setProfile(null);
+      // Evita deixar um onboarding de barbeiro abandonado travando o guard
+      // de routes/index.tsx (!signed || barberOnboarding) num futuro login —
+      // como !signed já é true aqui, isso não muda o roteamento imediato,
+      // mas garante que a flag não sobreviva a um logout.
+      setBarberOnboarding(false);
     },
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

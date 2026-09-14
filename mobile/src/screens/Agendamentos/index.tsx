@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {ActivityIndicator, Alert} from 'react-native';
 import {useTheme} from 'styled-components/native';
 import {useFocusEffect} from '@react-navigation/native';
@@ -75,6 +75,10 @@ export default function Agendamentos() {
   // Id do agendamento sendo cancelado (mostra "Cancelando…" e desabilita o
   // botão daquele card enquanto a chamada está em voo).
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+  // Rastreia se algum load já completou (sucesso ou erro) para diferenciar a
+  // carga inicial de um refetch por refoco — ver comentário no useFocusEffect
+  // abaixo. Ref (não state) porque não deve disparar re-render por si só.
+  const hasLoadedOnceRef = useRef(false);
 
   // useFocusEffect (não um useEffect de montagem) — Tab.Navigator mantém a
   // tela viva entre trocas de aba, então um mount-only effect não refaz o
@@ -94,7 +98,15 @@ export default function Agendamentos() {
           }
           return;
         }
-        setLoading(true);
+        // Só mostra o spinner de tela cheia (que esconde a lista atual) na
+        // primeira carga, quando ainda não há dados na tela. Num refoco
+        // subsequente (ex.: voltando do Checkout) a lista já carregada
+        // permanece visível enquanto o refetch roda em segundo plano — sem
+        // isso, cada troca de aba para "Agendamentos" apagava a lista
+        // inteira por um instante, mesmo já tendo os dados.
+        if (!hasLoadedOnceRef.current) {
+          setLoading(true);
+        }
         setError(null);
         try {
           // Única chamada em fetchClientAppointments por foco — a divisão
@@ -108,7 +120,10 @@ export default function Agendamentos() {
             setError(err instanceof Error ? err.message : String(err));
           }
         } finally {
-          if (!cancelled) setLoading(false);
+          if (!cancelled) {
+            setLoading(false);
+            hasLoadedOnceRef.current = true;
+          }
         }
       }
 

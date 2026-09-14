@@ -13,6 +13,22 @@ describe('computeFreeSlots', () => {
   // 2026-09-07 é uma segunda-feira (weekday 1)
   const date = new Date(2026, 8, 7);
 
+  // computeFreeSlots agora tem uma checagem real de "essa data é hoje", e os
+  // 4 testes abaixo (exceto o último, que testa exatamente esse
+  // comportamento) assumem a data fixture como um dia QUALQUER NO FUTURO —
+  // não como "hoje". Sem fixar o relógio, esses testes silenciosamente
+  // mudam de comportamento (ou passam a falhar) assim que o calendário real
+  // alcançar 2026-09-07. Fixamos "agora" para um momento claramente ANTES da
+  // data fixture, preservando a intenção original de exercitar o caminho
+  // "não é hoje".
+  beforeEach(() => {
+    jest.useFakeTimers().setSystemTime(new Date(2026, 7, 1));
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it('gera slots de 15min dentro da janela de trabalho', () => {
     const slots = computeFreeSlots({
       date,
