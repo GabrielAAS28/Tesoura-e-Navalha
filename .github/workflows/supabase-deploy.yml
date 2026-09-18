@@ -2,7 +2,7 @@ name: Deploy Supabase
 
 on:
   push:
-    branches: [master]
+    branches: [main]
     paths:
       - "supabase/**"
       - ".github/workflows/supabase-deploy.yml"
